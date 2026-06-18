@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/app/types/product";
-import LogoImage from "@/app/assets/Bixright.png"
-
+import LogoImage from "@/public/assets/Bixright.png"
 
 interface Props {
   categoryId: string;

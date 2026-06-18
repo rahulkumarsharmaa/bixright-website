@@ -11,16 +11,25 @@ const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/product/get-product-by-id`;
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    const res = await fetch(`${BASE_URL}/${id}`, { cache: "no-store" });
-    if (!res.ok) return null;
+    const url = `${BASE_URL}/${id}`;
+    console.log("Fetching product from URL:", url);
+    const res = await fetch(url, { cache: "no-store" });
+    console.log("Fetch response status:", res.status);
+    if (!res.ok) {
+      console.error("Fetch response was not OK");
+      return null;
+    }
 
     const json = await res.json();
+    console.log("Fetch response JSON:", json);
     if (json.success && json.data) {
       return json.data as Product;
     }
 
+    console.error("Fetch returned success=false or no data:", json);
     return null;
-  } catch {
+  } catch (err: any) {
+    console.error("Fetch threw an error:", err);
     return null;
   }
 }

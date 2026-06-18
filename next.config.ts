@@ -1,11 +1,16 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
     dangerouslyAllowLocalIP: true,
-    domains: ["192.168.1.8"],
     remotePatterns: [
+      // {
+      //   protocol: "http",
+      //   hostname: "192.168.1.8",
+      // }, 
       {
         protocol: "https",
         hostname: "images.unsplash.com",
@@ -31,10 +36,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
-        hostname: "192.168.1.8", // your backend machine IP
-        port: "5000", // Corrected port from error message
+        hostname: "bixright.net",
         pathname: "/**",
       },
+
     ],
   },
 };

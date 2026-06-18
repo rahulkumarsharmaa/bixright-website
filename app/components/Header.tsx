@@ -23,7 +23,7 @@ import { useWishlist } from "@/app/context/WishlistContext";
 import { useMediaQuery } from "react-responsive";
 import { useSite } from "../context/siteSetting";
 import type { Product } from "@/app/types/product";
-import LogoImage from "@/app/assets/Bixright.png"
+import LogoImage from "@/public/assets/Bixright.png"
 
 interface MainCategory {
   _id: string;

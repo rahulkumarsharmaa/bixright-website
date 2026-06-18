@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Popup from "@/app/popup/page";
+// import Popup from "@/app/popup/page";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Slide {
@@ -107,7 +107,7 @@ const HeroCarousel = () => {
       onMouseEnter={pauseAutoPlay}
       onMouseLeave={resumeAutoPlay}
     >
-      <Popup />
+      {/* <Popup /> */}
 
       {/* Slides */}
       <div className="absolute inset-0 w-full h-full pt-[inherit]">

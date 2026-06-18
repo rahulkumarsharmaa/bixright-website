@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FilterOptions, Product } from "@/app/types/product";
 import { useFilter } from "@/app/context/FilterContext";
-import LogoImage from "@/app/assets/Bixright.png"
+import LogoImage from "@/public/assets/Bixright.png"
 
 
 export default function Page() {

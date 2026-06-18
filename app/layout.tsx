@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Bixright | Premium Electronics Store",
   description: "Shop the latest electronics, gadgets, and accessories at the best prices.",
   icons: {
-    icon: "/favicon.png",
+    icon: "/assets/Bixright-fevicon.png",
   },
 };
 
@@ -33,7 +33,7 @@ export default function RootLayout({
             <Footer />
           </footer>
 
-          <Toaster 
+          <Toaster
             position="bottom-right"
             richColors
             expand={true}
