@@ -1,0 +1,17 @@
+export const subCategoryRules: Record<string, string[]> = {
+  dresses: ["dress", "gown"],
+  tops: ["top", "blouse"],
+  bags: ["bag", "handbag", "tote", "sling"],
+  footwear: ["shoe", "sneaker", "heel", "sandals"],
+  jewellery: ["ring", "necklace", "earrings", "bracelet"],
+  shirts: ["shirt"],
+  kurtas: ["kurta"],
+  lehengas: ["lehenga"],
+  jackets: ["jacket", "coat"],
+  saris: ["sari", "saree"],
+  kaftans: ["kaftan"],
+  tunics: ["tunic"],
+  jumpsuits: ["jumpsuit"],
+  belts: ["belt"],
+  "all-accessories": ["watch", "sunglass", "glasses", "accessory"],
+};
