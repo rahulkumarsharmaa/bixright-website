@@ -54,9 +54,9 @@ export default function RecentlyAddedProducts() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-1">
-            New Arrivals
+            Shop Smart Electronics & Premium Accessories
           </h2>
-          <p className="text-sm text-gray-500">Upgrade your tech with our latest gadgets</p>
+          <p className="text-sm text-gray-500">Top gadgets at the best prices</p>
         </div>
         {/* <Link href="/products" className="hidden md:block text-sm font-bold text-gray-600 hover:text-gray-700 transition">
           View All Products

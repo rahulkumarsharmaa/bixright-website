@@ -42,7 +42,7 @@ export default function FlashDeals() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Flash Deals</h2>
-            <p className="text-red-600 font-semibold text-sm">Grab it before it’s gone — lightning doesn’t strike twice!</p>
+            <p className="text-red-600 font-semibold capitalize text-sm">Save big on the latest audio gear. Shop Best Earbuds and Headphones</p>
           </div>
         </div>
 

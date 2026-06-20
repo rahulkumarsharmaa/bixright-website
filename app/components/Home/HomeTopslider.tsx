@@ -92,7 +92,7 @@ const SectionTop = () => {
     <div className="relative pt-0 md:pt-6 group">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4 md:mb-6 px-1">
-        <h2 className="text-lg md:text-xl font-bold text-gray-900">Top Categories</h2>
+        <h2 className="text-lg md:text-xl font-bold text-gray-900">Shop Top Electronics & Computer Accessories Online</h2>
         <Link href="/category/all" className="text-sm text-gray-600 hover:text-gray-700 font-medium">View All</Link>
       </div>
 

@@ -7,8 +7,8 @@ import { Toaster } from "sonner";
 import { fedraSans, ibmPlexSans } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "Bixright | Premium Electronics Store",
-  description: "Shop the latest electronics, gadgets, and accessories at the best prices.",
+  title: "Bixright | Premium Electronics Store | Buy Electronics & Accessories Online | Best Deals on Gadgets",
+  description: "Get the best electronics and accessories online. Buy Best EarBuds, CPU, smart gadgets, audio devices, headphones, and office essentials from Bixright.",
   icons: {
     icon: "/assets/Bixright-fevicon.png",
   },

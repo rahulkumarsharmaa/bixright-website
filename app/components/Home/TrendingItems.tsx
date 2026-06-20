@@ -58,6 +58,7 @@ export default function TrendingItems() {
             <span className="text-sm font-bold text-orange-600 uppercase tracking-widest">Hot Right Now</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight">
+
             Trending <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Products</span>
           </h2>
         </div>
