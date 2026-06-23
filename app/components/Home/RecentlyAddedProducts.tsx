@@ -56,21 +56,18 @@ export default function RecentlyAddedProducts() {
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-1">
             Shop Smart Electronics & Premium Accessories
           </h2>
-          <p className="text-sm text-gray-500">Top gadgets at the best prices</p>
+          <p className="text-sm text-gray-500 capitalize font-semibold">Top gadgets at the best prices</p>
         </div>
-        {/* <Link href="/products" className="hidden md:block text-sm font-bold text-gray-600 hover:text-gray-700 transition">
-          View All Products
-        </Link> */}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
         {loading &&
           Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm animate-pulse">
-              <div className="bg-gray-200 aspect-square rounded-lg mb-4 w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-10 bg-gray-200 rounded w-full mt-4"></div>
+            <div key={index} className="bg-white border border-gray-100 rounded-4xl p-4 shadow-sm animate-pulse">
+              <div className="bg-gray-200 aspect-square rounded-4xl mb-4 w-full"></div>
+              <div className="h-4 bg-gray-200 rounded-4xl w-3/4 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded-4xl w-1/2"></div>
+              <div className="h-10 bg-gray-200 rounded-4xl w-full mt-4"></div>
             </div>
           ))}
 
@@ -84,11 +81,11 @@ export default function RecentlyAddedProducts() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                className="group bg-white border border-gray-100/80 rounded-4xl overflow-hidden p-2 transition-all duration-300"
               >
                 <Link
                   href={`/product/${product._id}?categoryName=${product.subCategoryName}&subCategoryName=${product.subCategoryName}`}
-                  className="block relative p-3"
+                  className="block relative p-2"
                 >
                   <div className="relative aspect-[4/5] md:aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3">
                     {cover ? (
@@ -105,7 +102,7 @@ export default function RecentlyAddedProducts() {
                     )}
 
                     {product.discount > 0 && (
-                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                      <span className="absolute top-2 left-2 bg-discount text-white text-[10px] font-bold px-2 py-1 rounded-full">
                         -{product.discount}%
                       </span>
                     )}

@@ -62,6 +62,8 @@ export default function Header() {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     setIsMounted(true);
@@ -130,7 +132,28 @@ export default function Header() {
 
   useEffect(() => {
     const checkIsDesktop = () => setIsDesktop(window.innerWidth >= 768);
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 10);
+
+      if (currentScrollY <= 10) {
+        setVisible(true);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      const diff = currentScrollY - lastScrollY.current;
+      if (Math.abs(diff) > 15) {
+        if (diff > 0 && currentScrollY > 100) {
+          if (!mobileMenuOpen && !mobileSearchOpen && !userDropdown && !activeMenu && !showSuggestions) {
+            setVisible(false);
+          }
+        } else {
+          setVisible(true);
+        }
+        lastScrollY.current = currentScrollY;
+      }
+    };
 
     checkIsDesktop();
     window.addEventListener("resize", checkIsDesktop);
@@ -140,7 +163,7 @@ export default function Header() {
       window.removeEventListener("resize", checkIsDesktop);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [mobileMenuOpen, mobileSearchOpen, userDropdown, activeMenu, showSuggestions]);
 
   // Fetch categories
   useEffect(() => {
@@ -334,7 +357,11 @@ export default function Header() {
   };
 
   return (
-    <header className={`w-full fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex flex-col`}>
+    <m.header 
+      className="w-full fixed top-0 left-0 right-0 z-50 flex flex-col"
+      animate={{ y: visible ? "0%" : "-100%" }}
+      transition={{ type: "spring", stiffness: 300, damping: 30, mass: 0.8 }}
+    >
       {/* TOP BAR - PROMO */}
       <div className="bg-gray-900 text-white text-[10px] md:text-xs py-2 px-4 md:px-8 flex justify-between items-center z-50 relative">
         <div className="hidden md:flex items-center gap-4">
@@ -706,6 +733,6 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </m.header>
   );
 }

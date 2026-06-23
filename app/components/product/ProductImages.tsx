@@ -149,7 +149,7 @@ export default function ProductImages({
   if (!displayImage) return null;
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-4 sticky top-[160px] self-start">
+    <div className="flex flex-col-reverse md:flex-row gap-4 w-full">
       {/* Thumbnail List (Left side on Desktop, Bottom on Mobile) */}
       {allImages.length > 0 && (
         <m.div
@@ -169,7 +169,7 @@ export default function ProductImages({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05, duration: 0.2 }}
-                className={`w-14 h-14 md:w-16 md:h-16 relative overflow-hidden rounded-md flex-shrink-0 snap-start transition-all duration-200 border-2
+                className={`w-14 h-14 md:w-16 md:h-16 relative overflow-hidden rounded-4xl flex-shrink-0 snap-start transition-all duration-200 border-2
                            ${isActive
                     ? "border-black shadow-sm"
                     : "border-gray-200 hover:border-gray-400"
@@ -192,8 +192,8 @@ export default function ProductImages({
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="flex-1 relative bg-white border border-gray-100 rounded-xl overflow-hidden cursor-zoom-in group w-full"
-        style={{ aspectRatio: "3/4", maxHeight: "700px" }}
+        className="flex-1 relative border border-gray-100 mt-4 rounded-4xl overflow-hidden cursor-zoom-in group w-full"
+        style={{ aspectRatio: "1/1", maxHeight: "700px" }}
         onClick={() => setOpenModal(true)}
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
@@ -241,7 +241,7 @@ export default function ProductImages({
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="bg-white max-w-[60rem] w-full h-[85vh] flex overflow-hidden relative p-0 rounded-2xl shadow-2xl"
+                className="bg-white max-w-[60rem] w-full h-[85vh] flex overflow-hidden relative p-0 rounded-4xl shadow-2xl"
                 onClick={(e) => e.stopPropagation()} // prevent overlay close when clicking inside
               >
                 <button

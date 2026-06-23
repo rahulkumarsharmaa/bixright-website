@@ -64,24 +64,37 @@ export default async function RelatedProducts({
               <Link
                 key={item._id}
                 href={`/product/${item._id}`}
-                className="group"
+                className="bg-white rounded-4xl p-4 transition-all duration-300 group relative hover:z-10 border border-gray-100/80 flex flex-col justify-between"
               >
-                <div className="relative w-full aspect-[3/4]  overflow-hidden bg-white">
-                  <Image
-                    src={img}
-                    alt={item.title}
-                    fill
-                    className="object-cover object-top transition-transform duration-300 group-hover:scale-105 rounded-lg"
-                  />
+                <div>
+                  <div className="relative aspect-square mb-3 bg-gray-50 rounded-xl overflow-hidden">
+                    <Image
+                      src={img}
+                      alt={item.title}
+                      fill
+                      className="object-contain transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {item.discount > 0 && (
+                      <span className="absolute top-2 right-2 bg-discount text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                        -{item.discount}%
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-1 mb-1 capitalize">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 line-clamp-1 mb-2">
+                    {item.subTitle || item.categoryName}
+                  </p>
                 </div>
 
-                <h3 className="text-xl font-semibold mt-2 line-clamp-1">
-                  {item.brandName}
-                </h3>
-                <p className="text-sm text-gray-600 line-clamp-1">
-                  {item.subTitle}
-                </p>
-                <p className="font-semibold mt-1">₹{item.basePrice}</p>
+                <div className="flex items-center gap-2 mt-auto">
+                  {item.discount > 0 && (
+                    <span className="text-xs text-gray-400 line-through">₹{item.basePrice}</span>
+                  )}
+                  <span className="text-lg font-bold text-price">₹{item.discountedPrice}</span>
+                </div>
               </Link>
             );
           })}

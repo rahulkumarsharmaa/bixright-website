@@ -18,8 +18,8 @@ const ProductMain = ({ product }: Props) => {
   return (
     <div>
       <div className="max-w-[85rem] mx-auto px-4 pb-10 pt-4 md:pt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+          <div className="md:sticky md:top-24">
             <ProductImages
               onClose={() => { }}
               product={product}

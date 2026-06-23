@@ -42,6 +42,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-brand: var(--brand-primary);
+  --color-brand-hover: var(--brand-primary-hover);
+  --color-brand-light: var(--brand-primary-light);
+  --color-price: var(--price-green);
+  --color-discount: var(--discount-red);
 }
 
 @layer utilities {
@@ -57,7 +63,7 @@
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @layer base {
@@ -75,6 +81,7 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar,
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -83,20 +90,25 @@ body {
 
 /* Custom Thin Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px; /* narrow width */
+  width: 6px;
+  /* narrow width */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent; /* clean track */
+  background: transparent;
+  /* clean track */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #c1c1c1; /* light gray thumb */
-  border-radius: 10px; /* rounded */
+  background: #c1c1c1;
+  /* light gray thumb */
+  border-radius: 10px;
+  /* rounded */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a0a0a0; /* darker on hover */
+  background: #a0a0a0;
+  /* darker on hover */
 }
 
 /* Firefox */
@@ -137,6 +149,13 @@ body {
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  /* Brand Colors managed here */
+  --brand-primary: #7c3aed; /* Default: Violet/Purple */
+  --brand-primary-hover: #6d28d9;
+  --brand-primary-light: #f5f3ff;
+  --price-green: #16a34a;
+  --discount-red: #dc2626;
 }
 
 .dark {
@@ -171,16 +190,25 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+
+  /* Brand Colors in dark mode */
+  --brand-primary: #a78bfa;
+  --brand-primary-hover: #c4b5fd;
+  --brand-primary-light: #2e1065;
+  --price-green: #4ade80;
+  --discount-red: #f87171;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
+
 /* for stocks */
 
 @keyframes stock-alert {
@@ -188,10 +216,12 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.15);
     opacity: 0.5;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;

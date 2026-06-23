@@ -48,7 +48,7 @@ const SectionShopButtons = () => {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-80 bg-gray-100 rounded-2xl" />
+          <div key={i} className="h-80 bg-gray-100 rounded-4xl" />
         ))}
       </div>
     );
@@ -81,7 +81,7 @@ const SectionShopButtons = () => {
               href={`/category/${item._id}?categoryName=${encodeURIComponent(item.title)}`}
               className="block h-full w-full"
             >
-              <div className="relative h-[300px] md:h-[400px] w-full rounded-[2rem] overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100 bg-gray-50">
+              <div className="relative h-[300px] md:h-[400px] w-full rounded-4xl overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100 bg-gray-50">
 
                 {/* Image Scale Effect */}
                 <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
@@ -100,11 +100,10 @@ const SectionShopButtons = () => {
                 {/* Content */}
                 <div className="absolute bottom-0 inset-x-0 px-6 py-4 flex flex-col items-start justify-end h-full">
 
-                  <h3 className="text-2xl font-bold text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</h3>
-                  {/* <p className="text-gray-300 text-sm line-clamp-2 opacity-80 mb-4 group-hover:opacity-100 transition-opacity duration-300">{item.description}</p> */}
+                  {/* <h3 className="text-2xl font-bold text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</h3> */}
 
-                  <div className="w-full flex items-center justify-between text-white border-t border-white/20 pt-1 mt-2">
-                    <span className="font-semibold text-sm">Explore Collection</span>
+                  <div className="w-full flex items-center justify-between text-white">
+                    <span className="text-2xl font-bold capitalize text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</span>
                     <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500">
                       <ArrowRight size={14} />
                     </div>
