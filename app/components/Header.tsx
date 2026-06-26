@@ -402,14 +402,14 @@ export default function Header() {
         <div className="max-w-[1600px] mx-auto flex justify-between items-center">
           <div className="hidden md:flex items-center gap-4">
             <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
-              <Phone size={12} /> +91 98765 43210
+              <Phone size={12} />+91 {siteData.phone}
             </span>
             <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
               <HelpCircle size={12} /> Help Center
             </span>
           </div>
           <div className="flex-1 text-center md:text-right md:flex-none font-medium tracking-wide">
-            Free Shipping on all Electronics orders over ₹499! 🚀
+            Free Shipping on all Electronics orders over ₹999! 🚀
           </div>
         </div>
       </div>
@@ -693,7 +693,7 @@ export default function Header() {
                 </div>
                 <button onClick={closeMobileMenu} className="p-2 bg-brand/5 text-brand rounded-full"><X size={18} /></button>
               </div>
- 
+
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto">
                 {/* Quick Actions (only visible when guest/logged-out) */}
@@ -703,7 +703,7 @@ export default function Header() {
                     <button onClick={() => { router.push("/user/signup"); closeMobileMenu(); }} className="bg-brand-light text-brand border border-brand py-2.5 rounded-lg text-sm font-semibold">Sign Up</button>
                   </div>
                 )}
- 
+
                 {/* Categories */}
                 <div className="p-5">
                   <h3 className="text-xs font-bold text-brand/80 uppercase tracking-wider mb-2">Shop By Category</h3>
@@ -730,7 +730,7 @@ export default function Header() {
                             <ChevronDown size={16} className={`transition-transform duration-200 ${activeMenu === cat._id ? "rotate-180" : ""}`} />
                           </button>
                         </div>
- 
+
                         <AnimatePresence>
                           {activeMenu === cat._id && (
                             <m.div
@@ -757,7 +757,7 @@ export default function Header() {
                   </div>
                 </div>
               </div>
- 
+
               {/* Footer Links & Logout */}
               {token && (
                 <div className="bg-brand/5 border-t border-brand/10 flex-shrink-0 rounded-4xl relative pt-6 pb-5 px-5">
@@ -796,7 +796,7 @@ export default function Header() {
                   </button>
                 </div>
               )}
- 
+
             </m.div>
             <m.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
