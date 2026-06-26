@@ -6,6 +6,7 @@ import { Send, Phone, Mail, MapPin, Loader2, CheckCircle2, AlertCircle } from "l
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useSite } from "../context/siteSetting";
 
 // --- VALIDATION HELPERS ---
 const validateEmail = (email: string) => {
@@ -34,6 +35,7 @@ const containerVariants = {
 // const itemVariants = ;
 
 export default function ContactUs() {
+  const { siteData } = useSite();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -137,10 +139,14 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen text-gray-900 font-sans">
+    <div className="bg-brand-light text-brand-black ">
+      <title>{siteData?.siteName || "Bixright"} | Contact Us</title>
+      <meta name="description" content={`Have questions about your order, products, or payments? Contact ${siteData?.siteName || "Bixright"} customer support. We are here to help you 24/7.`} />
+      <meta property="og:title" content={`${siteData?.siteName || "Bixright"} | Contact Us`} />
+      <meta property="og:description" content={`Have questions about your order, products, or payments? Contact ${siteData?.siteName || "Bixright"} customer support. We are here to help you 24/7.`} />
 
       {/* HEADER SECTION */}
-      <section className="bg-black text-white pt-24 pb-20 px-4 md:px-8 relative overflow-hidden">
+      <section className="bg-black text-brand-light pt-16 pb-16 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <m.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,33 +154,29 @@ export default function ContactUs() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
-              Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Touch</span>
+              Get in <span className="text-brand">Touch</span>
             </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+            <p className="text-brand-light/80 text-lg md:text-xl max-w-2xl mx-auto">
               We'd love to hear from you. Whether you have a question about our products, orders, or just want to say hi, our team is ready to answer all your questions.
             </p>
           </m.div>
         </div>
-
-        {/* Background Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-gray-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       </section>
 
       {/* MAIN CONTENT */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 -mt-10 pb-20 relative z-20">
+      <section className="max-w-[1600px] mx-auto px-4 md:px-8 -mt-10 pb-20 relative z-20">
         <m.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 shadow-2xl rounded-3xl overflow-hidden bg-white"
+          className="grid grid-cols-1 lg:grid-cols-3 shadow-sm rounded-4xl overflow-hidden bg-brand-light"
         >
 
           {/* LEFT: CONTACT INFO */}
-          <div className="bg-gray-900 text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+          <div className="bg-black text-brand-light p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-              <p className="text-gray-400 mb-10">
+              <p className="text-brand-light/80 mb-10">
                 Fill up the form and our Team will get back to you within 24 hours.
               </p>
 
@@ -183,13 +185,14 @@ export default function ContactUs() {
                   hidden: { y: 20, opacity: 0 },
                   visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
                 }} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-red-500 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                  <div className="w-12 h-12 rounded-4xl bg-brand/80 flex items-center justify-center text-brand-light/80 group-hover:text-brand-light transition-all duration-300">
                     <Phone size={20} />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg">Phone</h4>
-                    <p className="text-gray-400 text-sm mt-1">+91 98765 43210</p>
-                    <p className="text-gray-400 text-sm">+91 12345 67890</p>
+                    <a href={`tel:+91${siteData?.phone}`} className="text-gray-400 text-sm mt-1 hover:text-brand-light transition-colors block">
+                      +91 {siteData?.phone}
+                    </a>
                   </div>
                 </m.div>
 
@@ -197,13 +200,14 @@ export default function ContactUs() {
                   hidden: { y: 20, opacity: 0 },
                   visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
                 }} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-500 group-hover:bg-gray-600 group-hover:text-white transition-all duration-300">
+                  <div className="w-12 h-12 rounded-4xl bg-brand/80 flex items-center justify-center text-brand-light/80 group-hover:text-brand-light transition-all duration-300">
                     <Mail size={20} />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg">Email</h4>
-                    <p className="text-gray-400 text-sm mt-1">support@Bixright.com</p>
-                    <p className="text-gray-400 text-sm">sales@Bixright.com</p>
+                    <a href={`mailto:${siteData?.email}`} className="text-gray-400 text-sm mt-1 hover:text-brand-light transition-colors block">
+                      {siteData?.email}
+                    </a>
                   </div>
                 </m.div>
 
@@ -211,42 +215,38 @@ export default function ContactUs() {
                   hidden: { y: 20, opacity: 0 },
                   visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
                 }} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-green-500 group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
+                  <div className="w-12 h-12 rounded-4xl bg-brand/80 flex items-center justify-center text-brand-light/80 group-hover:text-brand-light transition-all duration-300">
                     <MapPin size={20} />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg">Address</h4>
-                    <p className="text-gray-400 text-sm mt-1 leading-relaxed">
-                      123, Tech Plaza, Silicon Valley,<br />
-                      Bangalore, India - 560001
+                    <p className="text-gray-400 text-sm mt-1 max-w-[280px] md:max-w-none lg:max-w-[200px] capitalize">
+                      {siteData?.address}
                     </p>
                   </div>
                 </m.div>
               </div>
             </div>
-
-            {/* Decorative Circles on Left Panel */}
-            <div className="absolute bottom-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-2xl translate-x-1/3 translate-y-1/3" />
           </div>
 
           {/* RIGHT: FORM */}
-          <div className="lg:col-span-2 p-8 md:p-12 bg-white">
+          <div className="lg:col-span-2 p-8 md:p-12 bg-brand-light/5">
             {isSuccess ? (
               <m.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="h-full flex flex-col items-center justify-center text-center py-10"
               >
-                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+                <div className="w-20 h-20 bg-brand/20 text-brand rounded-4xl flex items-center justify-center mb-6">
                   <CheckCircle2 size={40} />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h2>
-                <p className="text-gray-500 max-w-md">
+                <h2 className="text-2xl font-bold text-black mb-2">Message Sent!</h2>
+                <p className="text-brand/90 max-w-md">
                   Thank you for contacting us. We have received your message and will respond to you shortly.
                 </p>
                 <button
                   onClick={() => setIsSuccess(false)}
-                  className="mt-8 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+                  className="mt-8 px-6 py-3 bg-brand/80 text-brand-light rounded-4xl hover:bg-brand transition-colors text-sm font-medium"
                 >
                   Send Another Message
                 </button>
@@ -256,7 +256,7 @@ export default function ContactUs() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                    <label className="text-sm font-medium text-black flex items-center justify-between">
                       Full Name
                       {errors.name && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.name}</span>}
                     </label>
@@ -265,14 +265,14 @@ export default function ContactUs() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-200 focus:border-black'} focus:ring-4 transition-all outline-none bg-gray-50/50`}
-                      placeholder="John Doe"
+                      className={`w-full px-4 py-3 rounded-4xl border ${errors.name ? 'border-red-500 ' : 'border-brand/30'} transition-all outline-none bg-gray-50/50`}
+                      placeholder="Enter Your Name"
                     />
                   </div>
 
                   {/* Phone */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                    <label className="text-sm font-medium text-black flex items-center justify-between">
                       Phone Number
                       {errors.phone && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.phone}</span>}
                     </label>
@@ -288,15 +288,15 @@ export default function ContactUs() {
                           handleChange({ ...e, target: { ...e.target, name: 'phone', value: val } });
                         }
                       }}
-                      className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-200 focus:border-black'} focus:ring-4 transition-all outline-none bg-gray-50/50`}
-                      placeholder="9876543210"
+                      className={`w-full px-4 py-3 rounded-4xl border ${errors.phone ? 'border-red-500 ' : 'border-brand/30'} transition-all outline-none bg-gray-50/50`}
+                      placeholder="Enter Your Number"
                     />
                   </div>
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                  <label className="text-sm font-medium text-black flex items-center justify-between">
                     Email Address
                     {errors.email && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.email}</span>}
                   </label>
@@ -305,14 +305,14 @@ export default function ContactUs() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-200 focus:border-black'} focus:ring-4 transition-all outline-none bg-gray-50/50`}
-                    placeholder="john@example.com"
+                    className={`w-full px-4 py-3 rounded-4xl border ${errors.email ? 'border-red-500 ' : 'border-brand/30'} transition-all outline-none bg-gray-50/50`}
+                    placeholder="Enter Your Email"
                   />
                 </div>
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                  <label className="text-sm font-medium text-black flex items-center justify-between">
                     Subject
                     {errors.subject && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.subject}</span>}
                   </label>
@@ -320,7 +320,7 @@ export default function ContactUs() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${errors.subject ? 'border-red-500 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-200 focus:border-black'} focus:ring-4 transition-all outline-none bg-gray-50/50 appearance-none`}
+                     className={`w-full px-4 py-3 rounded-4xl border ${errors.subject ? 'border-red-500 ' : 'border-brand/30'} transition-all outline-none bg-gray-50/50`}
                   >
                     <option value="" disabled>Select a subject</option>
                     <option value="Order Issue">Order Issue</option>
@@ -333,7 +333,7 @@ export default function ContactUs() {
 
                 {/* Message */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                  <label className="text-sm font-medium text-black flex items-center justify-between">
                     Message
                     {errors.message && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.message}</span>}
                   </label>
@@ -342,16 +342,16 @@ export default function ContactUs() {
                     value={formData.message}
                     onChange={handleChange}
                     rows={5}
-                    className={`w-full px-4 py-3 rounded-xl border ${errors.message ? 'border-red-500 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-200 focus:border-black'} focus:ring-4 transition-all outline-none bg-gray-50/50 resize-none`}
+                    className={`w-full px-4 py-3 rounded-4xl border ${errors.message ? 'border-red-500 ' : 'border-brand/30'} transition-all outline-none bg-gray-50/50`}
                     placeholder="Write your message here..."
                   />
-                  <p className="text-xs text-gray-400 text-right">{formData.message.length} / 20 characters min</p>
+                  <p className="text-xs text-brand/60 text-right">{formData.message.length} / 20 characters min</p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-brand/80 text-white font-bold py-4 rounded-4xl hover:bg-brand transition-all shadow-sm active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

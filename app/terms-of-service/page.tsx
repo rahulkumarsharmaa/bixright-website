@@ -6,20 +6,25 @@ import { useSite } from "@/app/context/siteSetting";
 export default function TermsOfServicePage() {
   const { siteData } = useSite();
   return (
-    <main className="min-h-screen bg-white px-4 sm:px-6 py-14  lg:pt-2 lg:pb-20">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-brand-light text-brand py-12 px-4 sm:px-6 font-sans">
+      <title>{siteData.siteName ? `${siteData.siteName} | Terms of Service` : "Bixright | Terms of Service"}</title>
+      <meta name="description" content={`Read ${siteData.siteName || "Bixright"}'s Terms of Service. Understand the terms, conditions, user agreements, and rules governing the use of Bixright store and services.`} />
+      <meta property="og:title" content={siteData.siteName ? `${siteData.siteName} | Terms of Service` : "Bixright | Terms of Service"} />
+      <meta property="og:description" content={`Read ${siteData.siteName || "Bixright"}'s Terms of Service. Understand the terms, conditions, user agreements, and rules governing the use of Bixright store and services.`} />
+
+      <div className="max-w-4xl mx-auto bg-white border border-brand/10 rounded-3xl p-6 md:p-10 shadow-sm">
         <m.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10"
+          className="text-3xl sm:text-4xl font-black text-brand mb-10"
         >
           Terms of Service
         </m.h1>
 
-        <div className="space-y-8 text-gray-800 leading-relaxed text-[15px] sm:text-base">
+        <div className="space-y-8 text-brand/80 leading-relaxed text-[15px] sm:text-base">
           <section>
-            <h2 className="text-xl font-semibold mb-2">1. Introduction</h2>
+            <h2 className="text-xl font-bold text-brand mb-2">1. Introduction</h2>
             <p>
               Welcome to {siteData?.siteName}. By accessing or using our website, you agree
               to follow these Terms of Service. If you do not agree with any
@@ -28,8 +33,8 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">2. Use of Website</h2>
-            <ul className="list-disc pl-6 space-y-1">
+            <h2 className="text-xl font-bold text-brand mb-2">2. Use of Website</h2>
+            <ul className="list-disc pl-6 space-y-1 text-brand/70">
               <li>You will use the website only for lawful purposes.</li>
               <li>
                 You will not attempt to disrupt or misuse any feature of the
@@ -49,13 +54,13 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               3. Product Information
             </h2>
             <p className="mb-2">
               We try to provide accurate details for all products, but:
             </p>
-            <ul className="list-disc pl-6 space-y-1">
+            <ul className="list-disc pl-6 space-y-1 text-brand/70">
               <li>Colors may vary slightly due to screen settings.</li>
               <li>Measurements may differ slightly based on manufacturing.</li>
               <li>Availability may change at any time.</li>
@@ -67,7 +72,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               4. Pricing and Payments
             </h2>
             <p className="mb-2">
@@ -81,7 +86,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               5. Orders and Acceptance
             </h2>
             <p className="mb-2">
@@ -89,7 +94,7 @@ export default function TermsOfServicePage() {
               This does not guarantee order acceptance.
             </p>
             <p className="mb-2">Your order is confirmed only after:</p>
-            <ul className="list-disc pl-6 space-y-1">
+            <ul className="list-disc pl-6 space-y-1 text-brand/70">
               <li>Successful payment verification</li>
               <li>Product availability check</li>
             </ul>
@@ -101,7 +106,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               6. Shipping and Delivery
             </h2>
             <p>
@@ -112,7 +117,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               7. Returns and Refunds
             </h2>
             <p>
@@ -122,7 +127,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               8. Account Responsibility
             </h2>
             <p>
@@ -133,18 +138,18 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               9. Intellectual Property
             </h2>
             <p>
               All images, graphics, content, logos, and product designs belong
-              to Bixright or our licensors. Copying or redistribution without
+              to {siteData.siteName || "Bixright"} or our licensors. Copying or redistribution without
               permission is prohibited.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-bold text-brand mb-2">
               10. Limitation of Liability
             </h2>
             <p>
@@ -155,20 +160,20 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-2">11. Changes to Terms</h2>
+            <h2 className="text-xl font-bold text-brand mb-2">11. Changes to Terms</h2>
             <p>
               We may update these Terms of Service from time to time. Updates
               will be posted on this page with the latest revision date.
             </p>
           </section>
 
-          <section>
-            <h2 className="text-xl font-semibold mb-2">
+          <section className="border-t border-brand/10 pt-6">
+            <h2 className="text-xl font-bold text-brand mb-2">
               12. Contact Information
             </h2>
-            <p>Email: {siteData?.email?.toLowerCase()}</p>
+            <p className="capitalize">Email: {siteData?.email?.toLowerCase()}</p>
             <p>Phone: {siteData?.phone}</p>
-            <p>Address: {siteData?.address}</p>
+            <p className="capitalize">Address: {siteData?.address}</p>
           </section>
         </div>
       </div>

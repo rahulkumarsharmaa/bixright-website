@@ -92,8 +92,8 @@ const SectionTop = () => {
     <div className="relative pt-0 md:pt-6 group">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4 md:mb-6 px-1">
-        <h2 className="text-lg md:text-xl font-bold text-gray-900">Shop Top Electronics & Computer Accessories Online</h2>
-        <Link href="/category/all" className="text-sm text-gray-600 hover:text-gray-700 font-medium">View All</Link>
+        <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 truncate pr-2">Electronics & Computer Accessories</h2>
+        <Link href="/category/all" className="text-sm text-gray-600 hover:text-gray-700 font-medium shrink-0">View All</Link>
       </div>
 
       {showLeftArrow && (
@@ -117,9 +117,9 @@ const SectionTop = () => {
       >
         {loading && (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex-shrink-0 animate-pulse">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-200 mb-2 mx-auto"></div>
-              <div className="w-16 h-4 bg-gray-200 rounded mx-auto"></div>
+            <div key={i} className="flex-shrink-0 w-20 sm:w-28 animate-pulse text-center">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-200 mb-2 mx-auto"></div>
+              <div className="w-14 h-4 bg-gray-200 rounded mx-auto"></div>
             </div>
           ))
         )}
@@ -132,13 +132,13 @@ const SectionTop = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
               key={item.slug}
-              className="flex-shrink-0 w-24 sm:w-28 flex flex-col items-center hover:opacity-100 transition-opacity"
+              className="flex-shrink-0 w-20 sm:w-28 flex flex-col items-center hover:opacity-100 transition-opacity"
             >
               <Link
                 href={`/category/${item.categoryId}/subcategory/${item._id}?categoryName=${item.categoryName}&subCategoryName=${item.title}`}
-                className="group flex flex-col items-center text-center gap-2"
+                className="group flex flex-col items-center text-center gap-2 w-full"
               >
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-transparent hover:border-gray-600 transition-all duration-300 p-1">
+                <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-transparent hover:border-gray-600 transition-all duration-300 p-1">
                   <div className="w-full h-full rounded-full overflow-hidden relative bg-gray-100">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`}

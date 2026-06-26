@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Filter, ChevronDown, Grid, X } from "lucide-react";
+import { Filter, ChevronDown, Grid, X, ArrowRight } from "lucide-react";
 import type { Product, FilterOptions } from "@/app/types/product";
 import { useFilter } from "@/app/context/FilterContext";
 import FilterSidebar from "@/app/components/FilterSidebar";
@@ -76,29 +76,34 @@ export default function SubCategoryPage() {
   const totalResults = products.length;
 
   return (
-    <div className="bg-white min-h-screen font-sans text-gray-900 mt-6 md:mt-10">
+    <div className=" font-sans text-gray-900">
+      <title>{subCategoryName ? `Bixright | Buy ${subCategoryName}` : "Bixright | Shop Products"}</title>
+      <meta name="description" content={subCategoryName ? `Shop high quality ${subCategoryName} online at Bixright. Great deals, secure checkout and fast delivery.` : "Discover premium electronics products at Bixright."} />
+      <meta property="og:title" content={subCategoryName ? `Bixright | Buy ${subCategoryName}` : "Bixright | Shop Products"} />
+      <meta property="og:description" content={subCategoryName ? `Shop high quality ${subCategoryName} online at Bixright.` : "Discover premium electronics products at Bixright."} />
+
       {/* HEADER STRIP */}
-      <div className="bg-gray-50 border-b border-gray-200">
-        <div className="max-w-[1500px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-gray-500 text-xs md:text-sm">
-            <Link href="/" className="hover:text-black">Home</Link>
+      <div className="bg-brand-light border-b border-brand/10 w-full pt-2">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2 text-brand/70 text-xs md:text-sm">
+            <Link href="/" className="hover:text-brand transition-colors font-medium">Home</Link>
             <span>/</span>
             <Link
               href={`/category/${category}?categoryName=${categoryName}`}
-              className="hover:text-black capitalize"
+              className="hover:text-brand transition-colors capitalize"
             >
               {categoryName}
             </Link>
             <span>/</span>
-            <span className="font-semibold text-black capitalize">{subCategoryName}</span>
+            <span className="font-semibold text-brand capitalize">{subCategoryName}</span>
           </div>
-          <p className="hidden md:block text-gray-500 text-xs">
-            Showing <span className="font-bold text-gray-900">{totalResults}</span> results
+          <p className="hidden md:block text-brand/50 text-xs">
+            Showing <span className="font-bold text-brand">{totalResults}</span> results
           </p>
         </div>
       </div>
 
-      <div className="max-w-[1500px] mx-auto px-4 md:px-6 py-6 flex gap-8 relative">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-6 flex gap-8 relative">
 
         {/* LEFT SIDEBAR (Desktop) */}
         <aside className="hidden lg:block w-64 flex-shrink-0 space-y-8 sticky top-48 h-fit max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar pr-2">
@@ -117,20 +122,18 @@ export default function SubCategoryPage() {
               {subCategoryName}
             </h1>
 
-            {/* Mobile Filter Button */}
-            <button
-              onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors w-full sm:w-auto shadow-sm"
-            >
-              <Filter size={16} /> Filters
-            </button>
+            {/* Mobile Filters and Sort Dropdown Side-by-Side */}
+            <div className="flex items-center gap-3 w-full lg:hidden">
+              <button
+                onClick={() => setMobileFilterOpen(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-brand/3 border border-brand/10 rounded-full font-bold text-sm hover:bg-brand/10 transition-colors shadow-sm text-brand"
+              >
+                <Filter size={16} /> Filters
+              </button>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <span className="text-sm text-gray-500 whitespace-nowrap hidden sm:inline-block">Sort by:</span>
-              <div className="relative w-full sm:w-48">
+              <div className="flex-1 relative">
                 <select
-                  className="w-full appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 hover:border-gray-400 cursor-pointer shadow-sm"
+                  className="w-full appearance-none bg-brand/3 border border-brand/10 text-brand py-2.5 px-4 pr-8 rounded-full text-sm font-semibold focus:outline-none cursor-pointer shadow-sm"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
@@ -139,7 +142,25 @@ export default function SubCategoryPage() {
                   <option value="price_desc">Price: High to Low</option>
                   <option value="newest">Newest Arrivals</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-brand pointer-events-none" size={16} />
+              </div>
+            </div>
+
+            {/* Desktop Sort Dropdown */}
+            <div className="hidden lg:flex items-center gap-2 w-auto">
+              <span className="text-sm text-brand/60 whitespace-nowrap">Sort by:</span>
+              <div className="relative w-48">
+                <select
+                  className="w-full appearance-none bg-brand/3 border border-brand/10 text-brand py-2 px-3 pr-8 rounded-full text-sm font-semibold focus:outline-none hover:border-brand/30 cursor-pointer shadow-sm"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="default">Featured</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="newest">Newest Arrivals</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-brand/50 pointer-events-none" size={16} />
               </div>
             </div>
           </div>
@@ -147,7 +168,7 @@ export default function SubCategoryPage() {
           {/* LOADING / EMPTY */}
           {products.length === 0 && (
             <div className="py-20 text-center">
-              <div className="inline-block p-4 rounded-full bg-gray-50 mb-4">
+              <div className="inline-block p-4 rounded-4xl bg-gray-50 mb-4">
                 <Grid size={32} className="text-gray-300" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">No products found</h3>
@@ -163,52 +184,64 @@ export default function SubCategoryPage() {
                 ? item.images[0].imageUrl : fallback;
 
               return (
-                <Link href={`/product/${item._id}`} key={item._id} className="group flex flex-col h-full">
-                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full relative">
-                    {/* Image */}
-                    <div className="relative bg-white aspect-square p-4">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${img}`}
-                        alt={item.title}
-                        fill
-                        className="object-contain mix-blend-multiply group-hover:scale-102 transition-transform duration-500"
-                      />
-                      {item.discount > 0 && (
-                        <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                          {item.discount}% OFF
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-4 flex flex-col flex-1 border-t border-gray-50">
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
-                        {item.brandName || "Generic"}
-                      </h3>
-                      <h2 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-600 transition-colors leading-snug" title={item.title}>
-                        {item.title}
-                      </h2>
-
-                      {/* Ratings */}
-                      <div className="flex items-center gap-1 mb-2">
-                        <div className="flex text-yellow-500 text-xs">
-                          {[...Array(5)].map((_, i) => (
-                            <svg key={i} xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill={i < Math.round(item.rating || 0) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={i < Math.round(item.rating || 0) ? "fill-current" : "text-gray-300"}>
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-600 hover:underline cursor-pointer">
-                          ({item.reviewCount || 4.5})
-                        </span>
+                <Link
+                  href={`/product/${item._id}`}
+                  key={item._id}
+                  className="group bg-brand/3 border border-brand/10 rounded-2xl md:rounded-4xl overflow-hidden p-1.5 sm:p-2 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div className="relative h-full flex flex-col justify-between">
+                    <div>
+                      {/* Image */}
+                      <div className="relative aspect-square bg-white overflow-hidden mb-3 rounded-2xl md:rounded-3xl flex-shrink-0">
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${img}`}
+                          alt={item.title}
+                          fill
+                          className="object-contain group-hover:scale-102 transition-transform duration-500"
+                        />
+                        {item.discount > 0 && (
+                          <span className="absolute top-2 left-2 bg-brand text-brand-light text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-full">
+                            -{item.discount}%
+                          </span>
+                        )}
                       </div>
 
-                      <div className="mt-auto pt-2">
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-lg font-bold text-gray-900">₹{item.discountedPrice?.toLocaleString()}</span>
+                      {/* Info */}
+                      <div className="px-1">
+                        <p className="text-[10px] text-brand/80 font-semibold uppercase tracking-wider mb-1">
+                          {item.brandName || "Generic"}
+                        </p>
+                        <h3 className="text-brand/90 font-bold text-xs sm:text-sm leading-snug line-clamp-2 mb-1.5 min-h-[2rem] sm:min-h-[2.5rem] group-hover:text-brand transition-colors" title={item.title}>
+                          {item.title}
+                        </h3>
+
+                        {/* Ratings */}
+                        <div className="flex items-center gap-1 mb-2">
+                          <div className="flex text-yellow-500 text-[10px] sm:text-xs">
+                            {[...Array(5)].map((_, i) => (
+                              <svg key={i} xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill={i < Math.round(item.rating || 0) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={i < Math.round(item.rating || 0) ? "fill-current w-2.5 h-2.5 sm:w-3 sm:h-3" : "text-gray-300 w-2.5 h-2.5 sm:w-3 sm:h-3"}>
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                              </svg>
+                            ))}
+                          </div>
+                          <span className="text-[10px] sm:text-xs text-brand/60">
+                            ({item.reviewCount || 4.5})
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Price Block */}
+                    <div className="px-1 mt-auto">
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-sm sm:text-lg font-bold text-brand">₹{item.discountedPrice?.toLocaleString()}</span>
                           {typeof item.basePrice === 'number' && typeof item.discountedPrice === 'number' && item.basePrice > item.discountedPrice && (
-                            <span className="text-xs text-gray-500 line-through">₹{item.basePrice?.toLocaleString()}</span>
+                            <span className="text-[10px] md:text-xs text-brand/50 line-through">₹{item.basePrice?.toLocaleString()}</span>
                           )}
+                        </div>
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
+                          <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
                         </div>
                       </div>
                     </div>
@@ -239,24 +272,24 @@ export default function SubCategoryPage() {
               className="fixed top-0 right-0 w-[85%] max-w-sm h-full bg-white z-50 shadow-2xl flex flex-col"
             >
               <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-shrink-0 bg-white">
-                <h2 className="font-bold text-lg">Filters</h2>
-                <button onClick={() => setMobileFilterOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
-                  <X size={20} />
-                </button>
-              </div>
+              <h2 className="font-bold text-lg text-brand">Filters</h2>
+              <button onClick={() => setMobileFilterOpen(false)} className="p-2 hover:bg-brand/10 rounded-full text-brand">
+                <X size={20} />
+              </button>
+            </div>
 
-              <div className="p-6 overflow-y-auto flex-1">
-                <FilterSidebar options={filterOption} />
-              </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              <FilterSidebar options={filterOption} />
+            </div>
 
-              <div className="p-4 border-t border-gray-100 bg-white pb-safe flex-shrink-0">
-                <button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="w-full bg-black text-white font-bold py-3.5 rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
-                >
-                  Show {products.length} Results
-                </button>
-              </div>
+            <div className="p-4 border-t border-gray-100 bg-white pb-safe flex-shrink-0">
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full bg-brand text-brand-light font-bold py-3.5 rounded-full hover:bg-brand/90 transition-colors shadow-lg"
+              >
+                Show {products.length} Results
+              </button>
+            </div>
             </m.div>
           </>
         )}

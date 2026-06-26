@@ -57,17 +57,17 @@ const SectionShopButtons = () => {
   if (categories.length === 0) return null;
 
   return (
-    <section className="py-10">
-      <div className="flex items-center justify-between mb-8 px-2">
+    <section className="py-6 md:py-10">
+      <div className="flex items-center justify-between mb-6 md:mb-8 px-2">
         <div>
-          <span className="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Collections</span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-none">
-            Shop by <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-violet-600">Category</span>
+
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-none">
+            Shop by <span className="text-brand">Category</span>
           </h2>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
         {categories.map((item, index) => (
           <m.div
             key={item._id}
@@ -81,7 +81,7 @@ const SectionShopButtons = () => {
               href={`/category/${item._id}?categoryName=${encodeURIComponent(item.title)}`}
               className="block h-full w-full"
             >
-              <div className="relative h-[300px] md:h-[400px] w-full rounded-4xl overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100 bg-gray-50">
+              <div className="relative h-[180px] sm:h-[280px] md:h-[400px] w-full rounded-2xl md:rounded-4xl overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100 bg-gray-50">
 
                 {/* Image Scale Effect */}
                 <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
@@ -98,14 +98,14 @@ const SectionShopButtons = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                 {/* Content */}
-                <div className="absolute bottom-0 inset-x-0 px-6 py-4 flex flex-col items-start justify-end h-full">
+                <div className="absolute bottom-0 inset-x-0 px-4 py-3 md:px-6 md:py-4 flex flex-col items-start justify-end h-full">
 
                   {/* <h3 className="text-2xl font-bold text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</h3> */}
 
-                  <div className="w-full flex items-center justify-between text-white">
-                    <span className="text-2xl font-bold capitalize text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</span>
-                    <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500">
-                      <ArrowRight size={14} />
+                  <div className="w-full flex items-center justify-between text-white gap-2">
+                    <span className="text-sm sm:text-xl md:text-2xl font-bold capitalize text-white leading-tight group-hover:translate-x-1 transition-transform duration-300 line-clamp-1">{item.title}</span>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white text-black flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500 shrink-0">
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>
                 </div>

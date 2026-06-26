@@ -24,8 +24,13 @@ export default function TrackOrderPage() {
   };
 
   const performSearch = async (id: string) => {
-    const cleanId = id.trim().startsWith("#") ? id.trim().slice(1) : id.trim();
-    if (!cleanId) {
+    let cleanId = id.trim();
+    // Ensure # is present for order IDs (skip if it's a 24-char MongoDB ID)
+    if (cleanId && !cleanId.startsWith("#") && !/^[0-9a-fA-F]{24}$/.test(cleanId)) {
+      cleanId = "#" + cleanId;
+    }
+
+    if (!cleanId || cleanId === "#") {
       toast.error("Please enter your Order ID");
       return;
     }
@@ -75,7 +80,10 @@ export default function TrackOrderPage() {
       const params = new URLSearchParams(window.location.search);
       const idParam = params.get("id");
       if (idParam) {
-        const cleanId = idParam.trim().startsWith("#") ? idParam.trim().slice(1) : idParam.trim();
+        let cleanId = idParam.trim();
+        if (cleanId && !cleanId.startsWith("#") && !/^[0-9a-fA-F]{24}$/.test(cleanId)) {
+          cleanId = "#" + cleanId;
+        }
         setOrderId(cleanId);
         performSearch(cleanId);
       }
@@ -112,8 +120,11 @@ export default function TrackOrderPage() {
               }
             }
           } else {
-            // Guest: Poll by ID (stripping # for safety)
-            const idToPoll = orderData.orderId.startsWith('#') ? orderData.orderId.slice(1) : orderData.orderId;
+            // Guest: Poll by ID
+            let idToPoll = orderData.orderId;
+            if (!idToPoll.startsWith("#") && !/^[0-9a-fA-F]{24}$/.test(idToPoll)) {
+              idToPoll = "#" + idToPoll;
+            }
             const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/order/get-order-by-id/${encodeURIComponent(idToPoll)}`;
             const res = await fetch(endpoint);
             if (res.headers.get("content-type")?.includes("application/json")) {
@@ -147,10 +158,14 @@ export default function TrackOrderPage() {
       const data = await res.json();
 
       if (data.success && Array.isArray(data.orders)) {
-        const found = data.orders.find((o: Order) =>
-          (o.orderId && o.orderId.toUpperCase() === id.toUpperCase()) ||
-          o._id === id
-        );
+        const found = data.orders.find((o: Order) => {
+          const oId = o.orderId ? o.orderId.toUpperCase() : "";
+          const searchId = id.toUpperCase();
+          const searchIdWithHash = searchId.startsWith("#") ? searchId : "#" + searchId;
+          const searchIdWithoutHash = searchId.startsWith("#") ? searchId.slice(1) : searchId;
+
+          return oId === searchId || oId === searchIdWithHash || oId === searchIdWithoutHash || o._id === id;
+        });
 
         if (found) {
           setTimeout(() => {
@@ -197,12 +212,12 @@ export default function TrackOrderPage() {
     return (
       <div className="relative">
         {/* Desktop Horizontal Line */}
-        <div className="hidden md:block absolute top-[28px] left-0 w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+        <div className="hidden md:block absolute top-[28px] left-0 w-full h-1 bg-brand/10 rounded-full overflow-hidden">
           <m.div
             initial={{ width: 0 }}
             animate={{ width: `${(currentIdx / (steps.length - 1)) * 100}%` }}
             transition={{ duration: 1, ease: "circOut" }}
-            className="h-full bg-black rounded-full"
+            className="h-full bg-brand rounded-full"
           />
         </div>
 
@@ -217,28 +232,28 @@ export default function TrackOrderPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.15 }}
-                className={`flex flex-row md:flex-col items-center md:text-center gap-4 md:gap-4 ${isCompleted ? 'opacity-100' : 'opacity-40 grayscale'}`}
+                className={`flex flex-row md:flex-col items-center md:text-center gap-4 md:gap-4 ${isCompleted ? 'opacity-100' : 'opacity-40'}`}
               >
                 {/* Icon Circle */}
                 <div className={`
-                   w-14 h-14 rounded-full flex items-center justify-center border-4 transition-all duration-500 shadow-xl
-                   ${isCompleted ? 'bg-black border-black text-white scale-100' : 'bg-white border-gray-100 text-gray-300 scale-90'}
-                   ${isCurrent ? 'ring-4 ring-black/10' : ''}
+                   w-14 h-14 rounded-full flex items-center justify-center border-4 transition-all duration-500 shadow-md
+                   ${isCompleted ? 'bg-brand border-brand text-brand-light scale-100' : 'bg-white border-brand/10 text-brand/35 scale-90'}
+                   ${isCurrent ? 'ring-4 ring-brand/10' : ''}
                 `}>
                   <step.icon size={20} strokeWidth={2.5} />
                 </div>
 
                 {/* Text Info */}
                 <div className="flex-1 md:flex-none">
-                  <h3 className={`text-sm font-bold uppercase tracking-wider ${isCompleted ? 'text-black' : 'text-gray-400'}`}>
+                  <h3 className={`text-[11px] md:text-xs font-bold uppercase tracking-wider ${isCompleted ? 'text-brand' : 'text-brand/30'}`}>
                     {step.label}
                   </h3>
-                  <p className="text-[10px] md:text-xs text-gray-400 font-medium leading-tight mt-1 max-w-[120px] mx-auto hidden md:block">
+                  <p className="text-[10px] md:text-[11px] text-brand/50 font-semibold leading-tight mt-1 max-w-[120px] mx-auto hidden md:block">
                     {step.desc}
                   </p>
 
                   {/* Mobile Description */}
-                  <p className="text-xs text-gray-400 font-medium mt-0.5 md:hidden">
+                  <p className="text-xs text-brand/50 font-semibold mt-0.5 md:hidden">
                     {step.desc}
                   </p>
                 </div>
@@ -251,17 +266,10 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div className="bg-[#FDFDFD] min-h-screen text-black font-sans selection:bg-black/10">
+    <div className="bg-brand-light text-brand font-sans selection:bg-brand/10">
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-32 pb-24 md:pt-20 md:pb-20 px-4 overflow-hidden">
-
-        {/* Abstract Background */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-          <div className="absolute -top-[30%] -left-[10%] w-[70vh] h-[70vh] bg-gradient-to-tr from-purple-200/40 to-gray-200/40 blur-[120px] rounded-full mix-blend-multiply opacity-70 animate-blob" />
-          <div className="absolute top-[10%] -right-[10%] w-[60vh] h-[60vh] bg-gradient-to-bl from-amber-200/40 to-orange-200/40 blur-[100px] rounded-full mix-blend-multiply opacity-70 animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-[20%] left-[20%] w-[80vh] h-[80vh] bg-gradient-to-t from-emerald-100/40 to-teal-100/40 blur-[120px] rounded-full mix-blend-multiply opacity-60 animate-blob animation-delay-4000" />
-        </div>
 
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <m.div
@@ -269,13 +277,10 @@ export default function TrackOrderPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-white border border-gray-200 shadow-sm text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-6">
-              Real-Time Tracking
-            </span>
-            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-gray-900 leading-[1.1]">
-              Track your <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-500">Inventory</span>
+            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-brand">
+              Track your Order
             </h1>
-            <p className="text-lg text-gray-600 mb-10 font-medium max-w-lg mx-auto leading-relaxed">
+            <p className="text-lg text-brand/80 mb-10 font-semibold max-w-lg mx-auto">
               Enter your unique Order ID to see the current status and estimated delivery of your package.
             </p>
           </m.div>
@@ -287,12 +292,12 @@ export default function TrackOrderPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className={`
-              relative flex items-center p-2 rounded-2xl bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-gray-100 transition-all duration-300
-              ${isSearching ? 'scale-[0.98] ring-4 ring-black/5' : 'hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] hover:border-gray-200'}
+              relative flex items-center rounded-full bg-white border transition-all duration-300 shadow-sm
+              ${isSearching ? 'scale-[0.98] border-brand ring-4 ring-brand/10' : 'border-brand/10 hover:border-brand/30 hover:shadow-md'}
             `}
           >
-            <div className="pl-4 text-gray-400">
-              {isSearching ? <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" /> : <Search size={22} />}
+            <div className="pl-5 text-brand/50">
+              {isSearching ? <div className="w-5 h-5 border-2 border-brand/30 border-t-brand rounded-full animate-spin" /> : <Search size={22} />}
             </div>
             <input
               type="text"
@@ -300,17 +305,17 @@ export default function TrackOrderPage() {
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
               disabled={isSearching}
-              className="flex-1 h-14 px-4 bg-transparent text-lg font-medium placeholder-gray-300 text-gray-900 outline-none w-full"
+              className="flex-1 py-3.5 px-6 bg-transparent text-lg font-semibold placeholder:text-brand/40 text-brand outline-none w-full"
             />
             <button
               type="submit"
               disabled={isSearching}
-              className="h-12 px-8 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed hidden sm:flex items-center gap-2"
+              className="px-6 py-3.5 bg-brand hover:bg-brand/90 text-brand-light font-bold rounded-full transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed hidden sm:flex items-center gap-2 mr-1.5"
             >
               Track <ArrowRight size={16} />
             </button>
             {/* Mobile Button */}
-            <button type="submit" disabled={isSearching} className="w-12 h-12 bg-black text-white rounded-xl flex sm:hidden items-center justify-center active:scale-95">
+            <button type="submit" disabled={isSearching} className="w-12 h-12 bg-brand text-brand-light rounded-full flex sm:hidden items-center justify-center active:scale-95 mr-1.5">
               <ArrowRight size={20} />
             </button>
           </m.form>
@@ -322,19 +327,7 @@ export default function TrackOrderPage() {
       <section className="max-w-6xl mx-auto px-4 pb-32 min-h-[400px]">
         <AnimatePresence mode="wait">
 
-          {/* A. EMPTY STATE */}
-          {!hasSearched && !isSearching && !orderData && (
-            <m.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center opacity-50 pointer-events-none grayscale"
-            >
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm h-48 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full" />
-                </div>
-              ))}
-            </m.div>
-          )}
+
 
           {/* B. LOADING SKELETON */}
           {isSearching && (
@@ -343,8 +336,8 @@ export default function TrackOrderPage() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="max-w-4xl mx-auto space-y-6"
             >
-              <div className="h-40 bg-white rounded-3xl border border-gray-100 shadow-sm animate-pulse" />
-              <div className="h-64 bg-white rounded-3xl border border-gray-100 shadow-sm animate-pulse" />
+              <div className="h-40 bg-brand/5 rounded-3xl border border-brand/10 shadow-sm animate-pulse" />
+              <div className="h-64 bg-brand/5 rounded-3xl border border-brand/10 shadow-sm animate-pulse" />
             </m.div>
           )}
 
@@ -360,33 +353,33 @@ export default function TrackOrderPage() {
             >
 
               {/* MAIN CARD */}
-              <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden relative">
+              <div className="bg-brand/5 rounded-3xl border border-brand/10 shadow-sm overflow-hidden relative">
 
                 {/* Header Strip */}
-                <div className="bg-gray-50/50 border-b border-gray-100 p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="bg-brand/3 border-b border-brand/10 p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <span className={`w-2.5 h-2.5 rounded-full ${orderData.orderStatus === 'delivered' ? 'bg-green-500' : 'bg-gray-500 animate-pulse'}`} />
-                      <span className="text-sm font-bold uppercase tracking-wider text-gray-500">{(orderData.orderStatus || "Pending").replace('_', ' ')}</span>
+                      <span className={`w-2.5 h-2.5 rounded-full ${orderData.orderStatus === 'delivered' ? 'bg-green-500' : 'bg-brand animate-pulse'}`} />
+                      <span className="text-sm font-bold uppercase tracking-wider text-brand/60">{(orderData.orderStatus || "Pending").replace('_', ' ')}</span>
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-black text-brand tracking-tight">
                       {orderData.orderId}
                     </h2>
-                    <p className="text-gray-400 font-medium mt-1 text-sm">
+                    <p className="text-brand/50 font-semibold mt-1 text-sm">
                       Placed on {new Date(orderData.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                   </div>
 
                   <div className="text-left md:text-right">
-                    <p className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-1">Estimated Delivery</p>
-                    <p className="text-2xl md:text-3xl font-black text-gray-900">
+                    <p className="text-sm font-bold uppercase tracking-wider text-brand/40 mb-1">Estimated Delivery</p>
+                    <p className="text-2xl md:text-3xl font-black text-brand">
                       {orderData.deliveryDate ? new Date(orderData.deliveryDate).toLocaleDateString("en-US", { month: 'short', day: 'numeric' }) : "Pending"}
                     </p>
                   </div>
                 </div>
 
                 {/* Timeline Area */}
-                <div className="p-8 md:p-14 border-b border-gray-100 bg-white">
+                <div className="p-8 md:p-14 border-b border-brand/10 bg-transparent">
                   {renderTimeline(orderData)}
                 </div>
 
@@ -395,8 +388,8 @@ export default function TrackOrderPage() {
 
                   {/* Left: Products */}
                   <div className="lg:w-2/3 p-8 md:p-10">
-                    <h4 className="flex items-center gap-2 font-bold text-gray-900 text-lg mb-6">
-                      <Package size={20} className="text-gray-400" /> Package Contents
+                    <h4 className="flex items-center gap-2 font-bold text-brand text-lg mb-6">
+                      <Package size={20} className="text-brand/40" /> Package Contents
                     </h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -404,19 +397,19 @@ export default function TrackOrderPage() {
                         <m.div
                           key={idx}
                           initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + (idx * 0.1) }}
-                          className="group flex p-4 bg-gray-50 hover:bg-gray-50/30 rounded-2xl border border-gray-100 hover:border-gray-100 transition-all duration-300"
+                          className="group flex p-4 bg-brand/3 hover:bg-brand/5 rounded-2xl border border-brand/10 transition-all duration-300"
                         >
-                          <div className="w-20 h-20 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                          <div className="w-20 h-20 bg-white rounded-xl shadow-sm border border-brand/10 overflow-hidden relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
                             {item.image ? (
-                              <Image src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`} alt={item.title} fill className="object-cover" />
-                            ) : (<div className="w-full h-full flex items-center justify-center text-gray-200"><Package size={24} /></div>)}
+                              <Image src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`} alt={item.title} fill className="object-contain" />
+                            ) : (<div className="w-full h-full flex items-center justify-center text-brand/20"><Package size={24} /></div>)}
                           </div>
                           <div className="ml-4 flex flex-col justify-center">
-                            <h5 className="font-bold text-gray-900 line-clamp-1 mb-1">{item.title}</h5>
-                            <div className="flex items-center gap-3 text-xs font-medium text-gray-500">
+                            <h5 className="font-bold text-brand line-clamp-1 mb-1">{item.title}</h5>
+                            <div className="flex items-center gap-3 text-xs font-semibold text-brand/60">
                               <span>Qty: {item.quantity}</span>
-                              <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                              <span>₹{item.total.toLocaleString()}</span>
+                              <span className="w-1 h-1 bg-brand/20 rounded-full" />
+                              <span className="text-price font-bold">₹{item.total.toLocaleString()}</span>
                             </div>
                           </div>
                         </m.div>
@@ -425,35 +418,35 @@ export default function TrackOrderPage() {
                   </div>
 
                   {/* Right: Address & Summary */}
-                  <div className="lg:w-1/3 bg-gray-50/50 p-8 md:p-10 border-t lg:border-t-0 lg:border-l border-gray-100">
+                  <div className="lg:w-1/3 bg-brand/3 p-8 md:p-10 border-t lg:border-t-0 lg:border-l border-brand/10">
                     <div className="space-y-8">
                       <div>
-                        <h4 className="flex items-center gap-2 font-bold text-gray-900 text-lg mb-4">
-                          <MapPin size={20} className="text-gray-400" /> Shipping To
+                        <h4 className="flex items-center gap-2 font-bold text-brand text-lg mb-4">
+                          <MapPin size={20} className="text-brand/40" /> Shipping To
                         </h4>
                         {orderData.shippingAddress && (
-                          <div className="text-gray-600 text-sm leading-relaxed font-medium">
-                            <p className="text-black font-bold text-base mb-1">{orderData.shippingAddress.fullName || "Guest User"}</p>
+                          <div className="text-brand/80 text-sm leading-relaxed font-semibold">
+                            <p className="text-brand font-bold text-base mb-1">{orderData.shippingAddress.fullName || "Guest User"}</p>
                             <p>{orderData.shippingAddress.street}</p>
                             <p>{orderData.shippingAddress.city} {orderData.shippingAddress.zipCode && ` - ${orderData.shippingAddress.zipCode}`}</p>
                             <p>{orderData.shippingAddress.state}, {orderData.shippingAddress.country}</p>
-                            {orderData.shippingAddress.phone && <p className="mt-2 text-xs bg-white inline-block px-2 py-1 rounded border border-gray-200">Phone: {orderData.shippingAddress.phone}</p>}
+                            {orderData.shippingAddress.phone && <p className="mt-2 text-xs bg-white inline-block px-2.5 py-1 rounded-xl border border-brand/10 text-brand">Phone: {orderData.shippingAddress.phone}</p>}
                           </div>
                         )}
                       </div>
 
-                      <div className="pt-8 border-t border-gray-200/50">
-                        <div className="flex justify-between items-center text-sm mb-2">
-                          <span className="text-gray-500">Subtotal</span>
-                          <span className="font-bold">₹{orderData.totalAmount.toLocaleString()}</span>
+                      <div className="pt-8 border-t border-brand/15">
+                        <div className="flex justify-between items-center text-sm mb-2 font-medium">
+                          <span className="text-brand/60">Subtotal</span>
+                          <span className="font-bold text-brand">₹{orderData.totalAmount.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between items-center text-sm mb-4">
-                          <span className="text-gray-500">Shipping</span>
+                        <div className="flex justify-between items-center text-sm mb-4 font-medium">
+                          <span className="text-brand/60">Shipping</span>
                           <span className="font-bold text-green-600">Free</span>
                         </div>
-                        <div className="flex justify-between items-center text-lg font-black border-t border-gray-200/50 pt-4">
-                          <span>Total</span>
-                          <span>₹{orderData.totalAmount.toLocaleString()}</span>
+                        <div className="flex justify-between items-center text-lg font-black border-t border-brand/10 pt-4">
+                          <span className="text-brand">Total</span>
+                          <span className="text-brand">₹{orderData.totalAmount.toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
@@ -462,7 +455,7 @@ export default function TrackOrderPage() {
                 </div>
 
                 {/* Footer Strip */}
-                <div className="bg-black text-white p-4 text-center text-xs font-medium uppercase tracking-widest cursor-default">
+                <div className="bg-brand text-brand-light p-4 text-center text-xs font-bold uppercase tracking-widest cursor-default">
                   Official Receipt • Bixright Ecommerce
                 </div>
 
@@ -470,7 +463,7 @@ export default function TrackOrderPage() {
 
               {/* Help Link */}
               <div className="mt-12 text-center">
-                <Link href="/contact" className="inline-flex items-center gap-2 text-gray-400 hover:text-black transition-colors font-bold text-sm">
+                <Link href="/contact" className="inline-flex items-center gap-2 text-brand/60 hover:text-brand transition-colors font-bold text-sm">
                   Need help with this order? <span className="underline">Contact Support</span> <ChevronRight size={14} />
                 </Link>
               </div>

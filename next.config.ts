@@ -7,10 +7,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
-      // {
-      //   protocol: "http",
-      //   hostname: "192.168.1.8",
-      // }, 
       {
         protocol: "https",
         hostname: "images.unsplash.com",

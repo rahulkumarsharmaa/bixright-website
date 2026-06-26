@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import LayoutWrapper from "./components/LayoutWrapper";
 import { ClientProviders } from "./providers";
 import { Toaster } from "sonner";
 import { fedraSans, ibmPlexSans } from "./fonts";
@@ -21,17 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${ibmPlexSans.variable} ${fedraSans.variable}`}>
-      <body className="antialiased scroll-smooth custom-scrollbar font-sans bg-gray-50 text-gray-900">
+      <body className="antialiased scroll-smooth custom-scrollbar font-sans bg-brand-light text-black">
         <ClientProviders>
-          <header>
-            <Header />
-          </header>
-
-          <main className="pt-24 md:pt-40 min-h-screen">{children}</main>
-
-          <footer>
-            <Footer />
-          </footer>
+          <LayoutWrapper>{children}</LayoutWrapper>
 
           <Toaster
             position="bottom-right"

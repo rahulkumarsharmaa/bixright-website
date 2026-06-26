@@ -438,25 +438,24 @@ export default function CheckoutPage(): React.ReactElement {
 
   if (placed) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAFA] text-black font-sans">
+      <main className="min-h-screen flex items-center justify-center p-4 bg-brand-light text-brand font-sans">
         <m.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-lg w-full border border-gray-100"
+          className="bg-brand/5 rounded-2xl sm:rounded-4xl border border-brand/10 shadow-sm p-8 md:p-12 text-center max-w-lg w-full"
         >
           <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-3xl font-extrabold mb-3 tracking-tight text-gray-900">Order Placed!</h2>
-          <p className="text-gray-500 mb-8 text-lg">Thank you for your purchase. Your order is confirmed.</p>
+          <h2 className="text-3xl font-extrabold mb-3 tracking-tight text-brand">Order Placed!</h2>
+          <p className="text-brand/60 mb-8 text-lg">Thank you for your purchase. Your order is confirmed.</p>
 
           {createdOrderId && (
             <div
               onClick={() => {
                 copyToClipboard(createdOrderId);
                 // toast.success("Order ID copied!"); // If you had toast
-                // Simple visual feedback could be state based, but for now just copy
                 const el = document.getElementById("copy-icon-feedback");
                 if (el) {
                   el.style.color = "green";
@@ -465,31 +464,30 @@ export default function CheckoutPage(): React.ReactElement {
                   }, 1000);
                 }
               }}
-              className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8 relative overflow-hidden group cursor-pointer hover:bg-gray-100 transition-colors"
+              className="bg-brand/3 border border-brand/10 rounded-3xl p-4 mb-8 relative overflow-hidden group cursor-pointer hover:bg-brand/10 transition-colors"
               title="Click to copy Order ID"
             >
-              <div className="absolute top-0 left-0 w-1 h-full bg-black group-hover:h-[80%] transition-all duration-500" />
-              <p className="text-xs text-gray-500 mb-2 font-bold uppercase tracking-widest">Order ID</p>
+              <p className="text-xs text-brand mb-2 font-bold uppercase tracking-widest">Order ID</p>
               <div className="flex items-center justify-center gap-2">
-                <span className="text-2xl font-mono font-bold text-gray-900 tracking-wider">
+                <span className="text-2xl font-mono font-bold text-brand tracking-wider">
                   {createdOrderId}
                 </span>
-                <Copy id="copy-icon-feedback" className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors" />
+                <Copy id="copy-icon-feedback" className="w-4 h-4 text-brand/40 group-hover:text-brand transition-colors" />
               </div>
-              <p className="text-xs text-gray-400 mt-2">Click to copy ID to track your shipment</p>
+              <p className="text-xs text-brand/40 mt-2">Click to copy ID to track your shipment</p>
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm"
+              className="w-full py-3 bg-brand/3 border border-brand/20 text-brand font-semibold rounded-4xl hover:bg-brand/10 transition-all duration-200 "
             >
               Back to Home
             </button>
             <button
               onClick={() => router.push(createdOrderId ? `/track-order?id=${createdOrderId}` : "/profile?tab=orders")}
-              className="w-full py-3.5 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 shadow-md"
+              className="w-full py-3 bg-brand text-brand-light font-semibold rounded-4xl hover:bg-brand/90 transition-all duration-200 shadow-sm"
             >
               {createdOrderId ? "Track Order" : "View Orders"}
             </button>
@@ -500,35 +498,32 @@ export default function CheckoutPage(): React.ReactElement {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFBFD] text-black pb-24 font-sans">
-      <div className="max-w-[1600px] mx-auto pt-8 px-4 sm:px-6 lg:px-12 xl:px-16">
+    <main className="min-h-screen bg-brand-light text-brand pb-10 font-sans">
+      <div className="max-w-[1600px] mx-auto pt-12 px-4 sm:px-6 lg:px-12 xl:px-16">
 
         {/* TOP HEADER BLOCK WITH STEPPER AT TOP RIGHT */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-6 border-b border-gray-100">
-
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-neutral-900">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-6 border-b border-brand/10">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-brand">
             Checkout
           </h1>
-
-
           {/* Stepper visual guide */}
-          <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm font-semibold text-neutral-500 bg-white p-2.5 rounded-2xl border border-neutral-100 shadow-sm">
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isShippingComplete ? "text-green-600 font-bold" : activeStep === 1 ? "text-black font-bold animate-pulse" : "text-neutral-400"}`}>
-              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isShippingComplete ? "bg-green-600 text-white" : activeStep === 1 ? "bg-black text-white" : "bg-neutral-100 text-neutral-500"}`}>
+          <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm font-semibold text-brand/60 bg-white p-2.5 rounded-2xl border border-brand/10 shadow-sm">
+            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isShippingComplete ? "text-green-600 font-bold" : activeStep === 1 ? "text-brand font-bold " : "text-brand/40"}`}>
+              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isShippingComplete ? "bg-green-600 text-white" : activeStep === 1 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isShippingComplete ? "✓" : "1"}
               </span>
               Shipping
             </span>
-            <span className="text-neutral-300 font-bold">➔</span>
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 2 ? "text-black font-bold animate-pulse" : "text-neutral-400"}`}>
-              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 2 ? "bg-black text-white" : "bg-neutral-100 text-neutral-500"}`}>
+            <span className="text-brand/35 font-bold">➔</span>
+            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 2 ? "text-brand font-bold " : "text-brand/40"}`}>
+              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 2 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isBillingComplete && isShippingComplete ? "✓" : "2"}
               </span>
               Billing
             </span>
-            <span className="text-neutral-300 font-bold">➔</span>
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 3 ? "text-black font-bold animate-pulse" : "text-neutral-400"}`}>
-              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 3 ? "bg-black text-white" : "bg-neutral-100 text-neutral-500"}`}>
+            <span className="text-brand/35 font-bold">➔</span>
+            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 3 ? "text-brand font-bold " : "text-brand/40"}`}>
+              <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 3 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isPaymentComplete && isBillingComplete && isShippingComplete ? "✓" : "3"}
               </span>
               Payment
@@ -546,14 +541,14 @@ export default function CheckoutPage(): React.ReactElement {
           <div className="lg:col-span-8 space-y-8">
 
             {/* SHIPPING */}
-            <section className="bg-white rounded-3xl p-6 md:p-8 border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.035)] hover:border-neutral-200/80 transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-neutral-100">
-                <div className="w-10 h-10 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-800">
+            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border  shadow-sm border-brand/10 transition-all duration-300">
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-brand/5">
+                <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-neutral-900">Shipping Address</h2>
-                  <p className="text-xs text-neutral-500 font-semibold mt-0.5">Specify where you would like your order delivered</p>
+                  <h2 className="text-xl font-bold text-brand">Shipping Address</h2>
+                  <p className="text-xs text-brand/50 font-semibold mt-0.5">Specify where you would like your order delivered</p>
                 </div>
               </div>
 
@@ -610,26 +605,26 @@ export default function CheckoutPage(): React.ReactElement {
             </section>
 
             {/* BILLING */}
-            <section className="bg-white rounded-3xl p-6 md:p-8 border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.035)] hover:border-neutral-200/80 transition-all duration-300">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-100">
+            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand/5">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-800">
+                  <div className="w-10 h-10 rounded-2xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
                     <CreditCard className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-neutral-900">Billing Address</h2>
-                    <p className="text-xs text-neutral-500 font-semibold mt-0.5">Matches your payment method billing statement</p>
+                    <h2 className="text-xl font-bold text-brand">Billing Address</h2>
+                    <p className="text-xs text-brand/50 font-semibold mt-0.5">Matches your payment method billing statement</p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="flex items-center gap-3 p-4 border border-neutral-200 rounded-2xl cursor-pointer hover:bg-neutral-50/50 hover:border-neutral-300 transition-all group">
+                <label className="flex items-center gap-3 p-4 border border-brand/10 rounded-2xl sm:rounded-4xl cursor-pointer hover:bg-brand/5 hover:border-brand/30 transition-all group">
                   <m.div
                     whileTap={{ scale: 0.9 }}
-                    className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors duration-200 ${sameAsShipping ? "bg-black border-black text-white" : "border-neutral-300 bg-white text-transparent"}`}
+                    className={`w-5 h-5 rounded-4xl border flex items-center justify-center transition-colors duration-200 ${sameAsShipping ? "bg-brand border-brand text-brand-light" : "border-brand/20 bg-white text-transparent"}`}
                   >
-                    {sameAsShipping && <CheckCircle className="w-3.5 h-3.5" />}
+                    {sameAsShipping && <CheckCircle className="w-3.5 h-3.5 text-brand-light" />}
                   </m.div>
                   <input
                     type="checkbox"
@@ -637,7 +632,7 @@ export default function CheckoutPage(): React.ReactElement {
                     onChange={() => setSameAsShipping(!sameAsShipping)}
                     className="hidden"
                   />
-                  <span className="text-sm font-semibold text-neutral-600 group-hover:text-black transition-colors">Same as shipping address</span>
+                  <span className="text-sm font-semibold text-brand/70 group-hover:text-brand transition-colors">Same as shipping address</span>
                 </label>
               </div>
 
@@ -704,14 +699,14 @@ export default function CheckoutPage(): React.ReactElement {
             </section>
 
             {/* PAYMENT */}
-            <section className="bg-white rounded-3xl p-6 md:p-8 border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.035)] hover:border-neutral-200/80 transition-all duration-300">
+            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300">
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-10 h-10 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-800">
+                <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
                   <CreditCard className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-neutral-900">Payment Method</h2>
-                  <p className="text-xs text-neutral-500 font-semibold mt-0.5">Secure, encrypted checkout transactions</p>
+                  <h2 className="text-xl font-bold text-brand">Payment Method</h2>
+                  <p className="text-xs text-brand/50 font-semibold mt-0.5">Secure, encrypted checkout transactions</p>
                 </div>
               </div>
 
@@ -740,7 +735,7 @@ export default function CheckoutPage(): React.ReactElement {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-5 p-6 bg-neutral-50/50 border border-neutral-100 rounded-3xl"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-5 p-6 bg-brand/3 border border-brand/10 rounded-3xl"
                   >
                     <Input
                       label="Card Number"
@@ -750,7 +745,7 @@ export default function CheckoutPage(): React.ReactElement {
                       onChange={handlePayChange}
                       error={payErrors.cardNumber}
                       className="md:col-span-2"
-                      icon={<CreditCard className="w-4 h-4 text-gray-400" />}
+                      icon={<CreditCard className="w-4 h-4 text-brand/40" />}
                     />
                     <Input
                       label="Card Holder Name"
@@ -786,12 +781,12 @@ export default function CheckoutPage(): React.ReactElement {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="p-6 bg-neutral-50/50 border border-neutral-100 rounded-3xl flex items-start gap-4"
+                    className="p-6 bg-brand/3 border border-brand/10 rounded-3xl flex items-start gap-4"
                   >
-                    <Truck className="w-6 h-6 text-neutral-850 flex-shrink-0 mt-0.5 animate-pulse" />
+                    <Truck className="w-6 h-6 text-brand flex-shrink-0 mt-0.5 " />
                     <div>
-                      <p className="font-bold text-sm text-neutral-900">Cash on Delivery Selected</p>
-                      <p className="text-xs text-neutral-500 font-semibold mt-1 leading-relaxed">
+                      <p className="font-bold text-sm text-brand">Cash on Delivery Selected</p>
+                      <p className="text-xs text-brand/50 font-semibold mt-1 leading-relaxed">
                         Pay for your order at the time of delivery. Please ensure that someone is available to receive the shipment and make the cash payment.
                       </p>
                     </div>
@@ -803,11 +798,11 @@ export default function CheckoutPage(): React.ReactElement {
 
           {/* RIGHT SIDE — ORDER SUMMARY */}
           <div className="lg:col-span-4 pl-0 lg:pl-4">
-            <aside className="bg-white/80 backdrop-blur-xl rounded-3xl border border-neutral-100 shadow-[0_12px_40px_rgb(0,0,0,0.015)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.045)] hover:border-neutral-200/80 p-6 md:p-8 sticky top-28 transition-all duration-300">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-100">
-                <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Order Summary</h2>
+            <aside className="bg-brand/5 rounded-2xl sm:rounded-4xl border border-brand/10 shadow-sm p-6 md:p-8 sticky top-28 transition-all duration-300">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand/5">
+                <h2 className="text-xl font-bold text-brand tracking-tight">Order Summary</h2>
                 {Array.isArray(cart) && cart.length > 0 && (
-                  <span className="bg-black text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  <span className=" text-brand text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
                     {cart.reduce((acc, c) => acc + c.quantity, 0)} Items
                   </span>
                 )}
@@ -817,41 +812,41 @@ export default function CheckoutPage(): React.ReactElement {
                 {Array.isArray(cart) && cart.length > 0 ? (
                   cart.map((it) => (
                     <div key={it._id} className="flex gap-4 group">
-                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-neutral-50 border border-neutral-100 flex-shrink-0">
+                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white border border-brand/10 flex-shrink-0">
                         {it.image ? (
                           <Image
                             src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${it.image}`}
                             alt={it.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-contain group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full bg-neutral-100" />
+                          <div className="w-full h-full bg-brand/5" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
                         <div className="flex justify-between items-start mb-0.5">
-                          <h3 className="font-bold text-sm text-neutral-900 line-clamp-1">{it.title}</h3>
-                          <p className="font-bold text-sm text-neutral-900">₹{(it.discountedPrice * it.quantity).toFixed(0)}</p>
+                          <h3 className="font-bold text-sm text-brand line-clamp-1">{it.title}</h3>
+                          <p className="font-bold text-sm text-brand">₹{(it.discountedPrice * it.quantity).toFixed(0)}</p>
                         </div>
-                        <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider mb-2">{it.brandName || "Electronics"}</p>
+                        <p className="text-[10px] text-brand/40 font-bold uppercase tracking-wider mb-2">{it.brandName || "Electronics"}</p>
 
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 bg-neutral-50 rounded-xl p-0.5 border border-neutral-200">
+                          <div className="flex items-center gap-2 bg-brand/3 rounded-xl p-0.5 border border-brand/10">
                             <button
                               type="button"
                               onClick={() => decreaseQty(it)}
                               disabled={it.quantity <= 1}
-                              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-neutral-500 hover:shadow-sm disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-brand/50 hover:shadow-sm disabled:opacity-30 disabled:hover:bg-transparent transition-all"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="text-xs font-bold w-4 text-center text-neutral-800">{it.quantity}</span>
+                            <span className="text-xs font-bold w-4 text-center text-brand/80">{it.quantity}</span>
                             <button
                               type="button"
                               onClick={() => increaseQty(it)}
                               disabled={it.quantity >= 10}
-                              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-neutral-500 hover:shadow-sm disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-brand/50 hover:shadow-sm disabled:opacity-30 disabled:hover:bg-transparent transition-all"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -859,7 +854,7 @@ export default function CheckoutPage(): React.ReactElement {
                           <button
                             type="button"
                             onClick={() => removeFromCart(it)}
-                            className="text-neutral-400 hover:text-red-500 transition-colors cursor-pointer p-1"
+                            className="text-brand/40 hover:text-red-500 transition-colors cursor-pointer p-1"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -868,24 +863,24 @@ export default function CheckoutPage(): React.ReactElement {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-neutral-400 font-medium text-sm">Your cart is empty</div>
+                  <div className="text-center py-8 text-brand/40 font-medium text-sm">Your cart is empty</div>
                 )}
               </div>
 
               {/* COUPON */}
-              <div className="mt-8 pt-6 border-t border-neutral-100">
+              <div className="mt-8 pt-6 border-t border-brand/5">
                 <div className="flex gap-2 mb-4">
                   <input
                     value={coupon}
                     onChange={(e) => setCoupon(e.target.value.toUpperCase())}
                     placeholder="Promo Code"
-                    className="flex-1 bg-neutral-50/50 border border-neutral-200 rounded-2xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-4 focus:ring-black/5 focus:border-black focus:bg-white transition-all duration-300 placeholder:text-neutral-400"
+                    className="flex-1 bg-brand/3 border border-brand/10 rounded-2xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-4 focus:ring-brand/10 focus:border-brand focus:bg-white transition-all duration-300 placeholder:text-brand/40"
                   />
                   <m.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={applyCoupon}
-                    className="px-5 py-2.5 bg-neutral-900 hover:bg-black text-white text-sm font-bold rounded-2xl transition-colors cursor-pointer shadow-sm"
+                    className="px-5 py-2.5 bg-brand hover:bg-brand/90 text-brand-light text-sm font-bold rounded-2xl transition-colors cursor-pointer shadow-sm"
                   >
                     Apply
                   </m.button>
@@ -906,7 +901,7 @@ export default function CheckoutPage(): React.ReactElement {
               </div>
 
               {/* TOTALS */}
-              <div className="space-y-1 mt-6 pb-5 border-b border-neutral-100">
+              <div className="space-y-1 mt-6 pb-5 border-b border-brand/5">
                 <Row label="Subtotal" value={`₹${subtotal.toFixed(2)}`} />
                 {discountAmount > 0 && <Row label="Discount" value={`-₹${discountAmount.toFixed(2)}`} highlightClass="text-green-600" />}
                 {couponApplied > 0 && <Row label="Coupon" value={`-₹${couponApplied.toFixed(2)}`} highlightClass="text-green-600" />}
@@ -914,8 +909,8 @@ export default function CheckoutPage(): React.ReactElement {
               </div>
 
               <div className="flex justify-between items-center py-6">
-                <span className="text-lg font-bold text-neutral-900">Total</span>
-                <span className="text-2xl font-black text-neutral-950 tracking-tight">₹{total.toFixed(2)}</span>
+                <span className="text-lg font-bold text-brand">Total</span>
+                <span className="text-2xl font-black text-brand tracking-tight">₹{total.toFixed(2)}</span>
               </div>
 
               {apiError && (
@@ -930,10 +925,10 @@ export default function CheckoutPage(): React.ReactElement {
                 whileTap={{ scale: 0.985 }}
                 disabled={loading || cart.length === 0}
                 onClick={placeOrder}
-                className="w-full bg-black hover:bg-neutral-900 text-white h-14 rounded-2xl font-bold text-lg shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/15 disabled:opacity-50 disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group cursor-pointer"
+                className="w-full bg-brand hover:bg-brand/90 text-brand-light px-6 py-2 md:py-3 rounded-4xl font-bold text-base text-base shadow-sm disabled:opacity-50 disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group cursor-pointer"
               >
                 {loading ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-brand-light/30 border-t-brand-light rounded-full animate-spin" />
                 ) : (
                   <>
                     <span>Pay Securely</span>
@@ -944,10 +939,10 @@ export default function CheckoutPage(): React.ReactElement {
                 )}
               </m.button>
 
-              <div className="flex items-center justify-center gap-4 mt-5 text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
-                <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-neutral-500" /> SSL Secured</span>
-                <span className="w-1.5 h-1.5 bg-neutral-200 rounded-full" />
-                <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-neutral-500" /> Safe Pay</span>
+              <div className="flex items-center justify-center gap-4 mt-5 text-[10px] text-brand/40 font-bold uppercase tracking-wider">
+                <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-brand/50" /> SSL Secured</span>
+                <span className="w-1.5 h-1.5 bg-brand/10 rounded-full" />
+                <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-brand/50" /> Safe Pay</span>
               </div>
             </aside>
           </div>
@@ -969,14 +964,14 @@ export function CountrySelect({ label, name, value, onChange, error }: Props) {
 
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{label}</label>
+      <label className="text-xs sm:text-sm font-bold text-brand/80 capitalize tracking-wider ml-1">{label}</label>
       <Select value={value} onValueChange={handleValueChange}>
-        <SelectTrigger className={`w-full h-12 bg-white border rounded-2xl px-4 text-sm font-semibold transition-all duration-300 ${error ? "border-red-300 ring-2 ring-red-50 focus:border-red-400" : "border-gray-200 hover:border-gray-300 focus:ring-4 focus:ring-black/5 focus:border-black"}`}>
+        <SelectTrigger className={`w-full h-11 bg-brand-light border rounded-4xl px-4 text-sm font-semibold transition-all duration-300 ${error ? "border-brand/10" : "border-brand/10 hover:border-brand/30 "}`}>
           <SelectValue placeholder="Select Country" />
         </SelectTrigger>
-        <SelectContent className="max-h-60 rounded-2xl shadow-2xl border-gray-100 bg-white/95 backdrop-blur-md">
+        <SelectContent className="max-h-60 rounded-2xl border-brand/5 bg-brand-light backdrop-blur-md">
           {countries.map((country) => (
-            <SelectItem key={country} value={country} className="cursor-pointer focus:bg-gray-50 py-3 rounded-xl m-1 transition-colors">{country}</SelectItem>
+            <SelectItem key={country} value={country} className="cursor-pointer focus:bg-brand/5 py-1 rounded-xl transition-colors">{country}</SelectItem>
           ))}
         </SelectContent>
       </Select>
@@ -1000,7 +995,7 @@ export function CountrySelect({ label, name, value, onChange, error }: Props) {
 function Input({ label, name, value, onChange, error, type = "text", placeholder, className, icon }: any) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{label}</label>
+      <label className="text-xs sm:text-sm font-bold text-brand/80 capitalize tracking-wider ml-1">{label}</label>
       <div className="relative">
         {icon && <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">{icon}</div>}
         <input
@@ -1009,11 +1004,11 @@ function Input({ label, name, value, onChange, error, type = "text", placeholder
           onChange={onChange}
           type={type}
           placeholder={placeholder}
-          className={`w-full h-12 bg-white border rounded-2xl px-4 text-sm font-semibold outline-none transition-all duration-300 placeholder:text-gray-400
+          className={`w-full h-11 bg-brand-light border border-brand/10 rounded-4xl px-4 text-sm font-semibold outline-none transition-all duration-300 placeholder:text-brand/40
                  ${icon ? "pl-11" : ""}
                  ${error
-              ? "border-red-300 ring-2 ring-red-50 focus:border-red-500"
-              : "border-gray-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-black/5"
+              ? "border-red-300 "
+              : "border-brand/10 hover:border-brand/30 "
             }
               `}
         />
@@ -1045,25 +1040,25 @@ function MethodButton({ active, onClick, label, icon, subLabel }: any) {
       onClick={onClick}
       className={`relative flex flex-col items-start gap-4 p-6 rounded-3xl border-2 transition-all w-full text-left cursor-pointer group shadow-sm hover:shadow-md
         ${active
-          ? "border-black bg-neutral-900 text-white shadow-lg shadow-black/5"
-          : "border-gray-200 bg-white hover:border-gray-300 text-gray-900"
+          ? "border-brand bg-brand text-brand-light shadow-lg shadow-brand/10"
+          : "border-brand/10 bg-brand/3 hover:border-brand/30 text-brand"
         }
       `}
     >
-      <div className={`p-3 rounded-xl transition-colors ${active ? "bg-white/10 text-white" : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"}`}>
+      <div className={`p-3 rounded-xl transition-colors ${active ? "bg-brand-light/10 text-brand-light" : "bg-brand/10 text-brand group-hover:bg-brand/20"}`}>
         {icon}
       </div>
       <div>
-        <p className={`font-bold text-sm ${active ? "text-white" : "text-gray-900"}`}>{label}</p>
-        <p className={`text-xs mt-1 font-medium ${active ? "text-gray-300" : "text-gray-500"}`}>{subLabel}</p>
+        <p className={`font-bold text-sm ${active ? "text-brand-light" : "text-brand"}`}>{label}</p>
+        <p className={`text-xs mt-1 font-medium ${active ? "text-brand-light/80" : "text-brand/60"}`}>{subLabel}</p>
       </div>
       {active && (
         <m.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute top-5 right-5 text-white"
+          className="absolute top-5 right-5 text-brand-light"
         >
-          <CheckCircle className="w-6 h-6 fill-white text-black" />
+          <CheckCircle className="w-6 h-6 fill-brand-light text-brand" />
         </m.div>
       )}
     </m.button>
@@ -1073,8 +1068,8 @@ function MethodButton({ active, onClick, label, icon, subLabel }: any) {
 function Row({ label, value, highlightClass }: any) {
   return (
     <div className="flex justify-between items-center text-sm py-1.5">
-      <span className="text-gray-500 font-medium">{label}</span>
-      <span className={`font-semibold ${highlightClass || "text-gray-900"}`}>{value}</span>
+      <span className="text-brand/60 font-medium">{label}</span>
+      <span className={`font-semibold ${highlightClass || "text-brand"}`}>{value}</span>
     </div>
   );
 }

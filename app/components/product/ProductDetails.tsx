@@ -274,7 +274,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
             </h1> */}
 
             <h1
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal leading-relaxed sm:leading-snug md:leading-tight text-gray-900 cursor-pointer select-none break-words overflow-hidden tracking-tight capitalize"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold leading-relaxed sm:leading-snug md:leading-tight text-brand cursor-pointer select-none break-words overflow-hidden tracking-tight capitalize"
             >
               {product.title}
             </h1>
@@ -287,7 +287,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           {product.subTitle && (
             <div className="relative">
               <p
-                className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed sm:leading-snug max-w-full lg:max-w-3xl xl:max-w-4xl break-words cursor-pointer transition-colors duration-200 hover:text-gray-800 capitalize"
+                className="text-sm sm:text-base md:text-lg text-brand/70 leading-relaxed sm:leading-snug max-w-full lg:max-w-3xl xl:max-w-4xl break-words cursor-pointer transition-colors duration-200 hover:text-brand capitalize"
                 onClick={() =>
                   product.subTitle.length > 80 &&
                   setShowFullSubtitle(!showFullSubtitle)
@@ -306,19 +306,19 @@ export function ProductDetails({ product, onColorSelect }: Props) {
         <div className=" flex items-center justify-between pr-4">
           <div className="flex items-center gap-3">
             {/* Selling Price */}
-            <span className="text-xl font-semibold text-gray-900">
+            <span className="text-xl font-bold text-brand">
               ₹{discountedPrice}
             </span>
 
             {/* Cut Price */}
             {discountPercent > 0 && (
-              <span className="text-lg line-through text-gray-400">
+              <span className="text-lg line-through text-brand/40">
                 ₹{basePrice}
               </span>
             )}
 
             {discountPercent > 0 && (
-              <span className="text-price font-semibold text-lg">
+              <span className="text-brand font-semibold text-lg">
                 {discountPercent}% off
               </span>
             )}
@@ -334,7 +334,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           </div>
         </div>
 
-        <div className="text-sm text-gray-600 my-2">Inclusive of all taxes</div>
+        <div className="text-sm text-brand/60 my-2">Inclusive of all taxes</div>
         {/* COLOUR */}
 
         <div className="flex items-center justify-end mb-2">
@@ -348,32 +348,32 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           </div>
         </div>
 
-        <div className="text-sm text-gray-600 my-2">
+        <div className="text-sm text-brand/60 my-2">
           Dispatch timelines may vary, select a size for details
         </div>
         {/* QUANTITY */}
         <div className="relative">
           {/* Quantity Label */}
-          <h3 className="text-sm font-bold text-gray-900 mb-2">Quantity</h3>
+          <h3 className="text-sm font-bold text-brand mb-2">Quantity</h3>
 
           <div className="flex items-center justify-between gap-4">
             {/* Left side: Quantity Selector */}
             <div className="flex flex-col">
-              <div className="flex items-center bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+              <div className="flex items-center bg-white border border-brand/10 rounded-lg shadow-sm overflow-hidden">
                 {/* Decrease */}
                 <button
                   onClick={() => {
                     setQty((prev) => Math.max(1, prev - 1));
                     // setShowStockOnQty(true);
                   }}
-                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-gray-700 hover:bg-gray-100 active:scale-95 transition"
+                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-brand hover:bg-brand/10 active:scale-95 transition"
                   aria-label="Decrease quantity"
                 >
                   −
                 </button>
 
                 {/* Quantity Number */}
-                <div className="w-10 h-10 flex items-center justify-center text-sm font-semibold text-gray-900 border-x border-gray-200">
+                <div className="w-10 h-10 flex items-center justify-center text-sm font-semibold text-brand border-x border-brand/10">
                   {qty}
                 </div>
 
@@ -394,7 +394,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
                     setShowStockOnQty(true);
                     setQty((prev) => Math.min(maxQty, prev + 1));
                   }}
-                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-gray-700 hover:bg-gray-100 active:scale-95 transition"
+                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-brand hover:bg-brand/10 active:scale-95 transition"
                   aria-label="Increase quantity"
                 >
                   +
@@ -403,15 +403,15 @@ export function ProductDetails({ product, onColorSelect }: Props) {
 
               {/* Max note - positioned below quantity selector */}
               <p
-                className={`text-xs transition-all duration-300 mt-2 ml-1 capitalize ${highlightMax ? "text-red-600 font-semibold" : "text-gray-500"}`}
+                className={`text-xs transition-all duration-300 mt-2 ml-1 capitalize ${highlightMax ? "text-red-600 font-semibold" : "text-brand/50"}`}
               >
                 Max allowed: 10
               </p>
             </div>
 
             {/* Right side: Ready To Ship */}
-            <div className="flex items-center gap-1 text-sm font-medium text-gray-800">
-              <TruckIcon className="w-4 h-4 text-gray-600" />
+            <div className="flex items-center gap-1 text-sm font-medium text-brand/80">
+              <TruckIcon className="w-4 h-4 text-brand/60" />
               Ready To Ship
             </div>
           </div>
@@ -429,7 +429,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
                   animate={{ opacity: 1, y: -50, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="absolute left-1/3 -translate-x-1/2 bg-red-500 text-white text-xs font-normal px-3 py-2 rounded-lg shadow-lg z-50"
+                  className="absolute left-1/3 -translate-x-1/2 bg-red-500 text-white text-xs font-normal px-3 py-2 rounded-4xl shadow-sm z-50"
                 >
                   {addError}
                 </m.div>
@@ -440,14 +440,14 @@ export function ProductDetails({ product, onColorSelect }: Props) {
               <button
                 onClick={handleAdd}
                 disabled={addingToCart || added}
-                className={`flex-1 rounded-full px-5 py-2.5 font-semibold transition-all duration-300 flex items-center justify-center cursor-pointer gap-2 border border-gray-300 text-gray-900 text-base bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed min-w-0`}
+                className={`flex-1 rounded-full px-5 py-2 font-semibold transition-all duration-300 flex items-center justify-center cursor-pointer gap-2 border border-brand/20 text-brand text-base bg-brand/3 hover:bg-brand/10 disabled:opacity-50 disabled:cursor-not-allowed min-w-0`}
               >
                 {addingToCart ? (
-                  <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin" />
                 ) : added ? (
-                  <Check className="w-5 h-5 text-gray-900" />
+                  <Check className="w-5 h-5 text-brand" />
                 ) : (
-                  <ShoppingCart className="w-5 h-5 text-gray-900" />
+                  <ShoppingCart className="w-5 h-5 text-brand" />
                 )}
 
                 <span className="truncate">
@@ -457,7 +457,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
 
               <button
                 onClick={handleBuy}
-                className={`flex-1 rounded-full px-5 py-2.5 font-semibold text-base bg-brand text-white transition-all duration-300 flex items-center justify-center cursor-pointer gap-2 hover:bg-brand-hover shadow-sm hover:shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed min-w-0`}
+                className={`flex-1 rounded-full px-5 py-2.5 font-semibold text-base bg-brand text-brand-light transition-all duration-300 flex items-center justify-center cursor-pointer gap-2 hover:bg-brand/90 shadow-sm hover:shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed min-w-0`}
               >
                 <Zap className="w-5 h-5" />
                 <span className="truncate">Buy Now</span>
@@ -466,7 +466,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
 
             <button
               onClick={() => handleWishlist({ productId: product._id })}
-              className={`px-4 py-3 rounded-full border-2 flex items-center justify-center cursor-pointer transition duration-300 flex-shrink-0 ${isInWishlist(product._id) ? "bg-red-50 border-red-300 text-red-600 hover:bg-red-100" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400"}`}
+              className={`px-2 py-2 rounded-full border-2 flex items-center justify-center cursor-pointer transition duration-300 flex-shrink-0 ${isInWishlist(product._id) ? "bg-red-50 border-red-300 text-red-600 hover:bg-red-100" : "bg-brand/3 border-brand/10 text-brand/70 hover:bg-brand/10 hover:border-brand/30"}`}
             >
               <Heart
                 className={`w-6 h-6 ${isInWishlist(product._id) ? "fill-current" : ""}`}
@@ -481,7 +481,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
               href="https://wa.me/7340582197"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-initial shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-300 text-xs sm:text-sm font-medium text-gray-700 shadow-sm hover:shadow"
+              className="flex-initial shrink-0 flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-brand/10 bg-brand/3 hover:bg-brand/10 transition-all duration-300 text-xs sm:text-sm font-bold text-brand/70 shadow-sm hover:shadow"
             >
               <FaWhatsapp className="text-green-500 text-base sm:text-lg" />
               <span>Chat</span>
@@ -490,7 +490,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
             {/* Call */}
             <a
               href={`tel:${siteData.phone}`}
-              className="flex-initial shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-300 text-xs sm:text-sm font-medium text-gray-700 shadow-sm hover:shadow"
+              className="flex-initial shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-brand/10 bg-brand/3 hover:bg-brand/10 transition-all duration-300 text-xs sm:text-sm font-bold text-brand/70 shadow-sm hover:shadow"
             >
               <FiPhone className="text-blue-500 text-sm sm:text-base" />
               <span className="truncate">{siteData.phone || "Call"}</span>
@@ -499,7 +499,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
             {/* Email */}
             <a
               href={`mailto:${siteData.email || "support@example.com"}`}
-              className="flex-1 min-w-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-300 text-xs sm:text-sm font-medium text-gray-700 shadow-sm hover:shadow"
+              className="flex-1 min-w-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-brand/10 bg-brand/3 hover:bg-brand/10 transition-all duration-300 text-xs sm:text-sm font-bold text-brand/70 shadow-sm hover:shadow"
             >
               <HiOutlineMail className="text-red-500 text-base" />
               <span className="truncate">{siteData.email}</span>
@@ -513,7 +513,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
         initial={{ y: 0 }}
         animate={{ y: isFooterVisible ? "100%" : "0%" }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-99 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-[30] p-4 bg-brand-light/95 backdrop-blur-md border-t border-brand/10"
       >
         <AnimatePresence>
           {(addError) && (
@@ -533,10 +533,10 @@ export function ProductDetails({ product, onColorSelect }: Props) {
         <div className="flex gap-3 max-w-md mx-auto">
           <button
             onClick={handleAdd}
-            className="w-full text-[.845rem] bg-black hover:to-gray-900 text-white px-4 py-3 rounded-full font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-xl transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="w-full text-[.845rem] bg-brand/10 border border-brand/20 hover:bg-brand/20 text-brand px-4 py-3 rounded-full font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             {addingToCart ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin" />
             ) : (
               <ShoppingCart className="w-5 h-5" />
             )}
@@ -546,7 +546,7 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           <button
             onClick={handleBuy}
             disabled={isOutOfStock}
-            className="w-full bg-brand hover:bg-brand-hover text-white px-4 py-3 rounded-full font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer hover:shadow-xl transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="w-full bg-brand hover:bg-brand/90 text-brand-light px-4 py-3 rounded-full font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer hover:shadow-xl transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             <Zap className="w-4 h-4" />
             Buy Now
@@ -556,11 +556,11 @@ export function ProductDetails({ product, onColorSelect }: Props) {
             onClick={() => handleWishlist({ productId: product._id })}
             className={`w-full max-w-[4rem] py-3 rounded-full border-2 flex items-center justify-center shadow-md transition duration-300 ${isInWishlist(product._id)
               ? "bg-red-50 border-red-300 text-red-600 hover:bg-red-100"
-              : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"
+              : "bg-brand/3 border-brand/10 text-brand/70 hover:bg-brand/10"
               }`}
           >
             <Heart
-              className={`w-5 h-5 ${isInWishlist(product._id) ? "fill-current" : ""
+              className={`w-4 h-5 ${isInWishlist(product._id) ? "fill-current" : ""
                 }`}
             />
           </button>

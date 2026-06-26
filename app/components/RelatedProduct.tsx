@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { Product } from "@/app/types/product";
-import LogoImage from "@/public/assets/Bixright.png"
+import LogoImage from "@/public/assets/Bixright.png";
 
 interface Props {
   categoryId: string;
@@ -44,8 +45,8 @@ export default async function RelatedProducts({
   if (related.length === 0) return null;
 
   return (
-    <section className="text-black py-16">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="text-brand py-16">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6">
         <h2 className="font-semibold mb-6 text-3xl text-center">
           Related Products
         </h2>
@@ -64,36 +65,50 @@ export default async function RelatedProducts({
               <Link
                 key={item._id}
                 href={`/product/${item._id}`}
-                className="bg-white rounded-4xl p-4 transition-all duration-300 group relative hover:z-10 border border-gray-100/80 flex flex-col justify-between"
+                className="group bg-brand/3 border border-brand/10 rounded-2xl md:rounded-4xl overflow-hidden p-1.5 sm:p-2 transition-all duration-300 flex flex-col justify-between"
               >
-                <div>
-                  <div className="relative aspect-square mb-3 bg-gray-50 rounded-xl overflow-hidden">
+                <div className="relative h-full flex flex-col justify-between">
+                  {/* Image */}
+                  <div className="relative aspect-square bg-white overflow-hidden mb-3 rounded-3xl flex-shrink-0">
                     <Image
                       src={img}
                       alt={item.title}
                       fill
-                      className="object-contain transition-transform duration-300 group-hover:scale-105"
+                      className="object-contain group-hover:scale-102 transition-transform duration-500"
                     />
                     {item.discount > 0 && (
-                      <span className="absolute top-2 right-2 bg-discount text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                      <span className="absolute top-2 left-2 bg-brand text-brand-light text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-full">
                         -{item.discount}%
                       </span>
                     )}
                   </div>
+                  <div className="p-2">
 
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-1 mb-1 capitalize">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-500 line-clamp-1 mb-2">
-                    {item.subTitle || item.categoryName}
-                  </p>
-                </div>
+                    {/* Info */}
+                    <div className="px-1">
+                      <h3 className="text-brand/90 font-bold text-xs sm:text-base md:text-lg leading-snug line-clamp-2  group-hover:text-brand transition-colors" title={item.title}>
+                        {item.title}
+                      </h3>
+                      <p className="text-[10px] text-brand/80 font-semibold uppercase tracking-wider mb-1 line-clamp-2">
+                        {item.subTitle || item.categoryName || "Generic"}
+                      </p>
+                    </div>
 
-                <div className="flex items-center gap-2 mt-auto">
-                  {item.discount > 0 && (
-                    <span className="text-xs text-gray-400 line-through">₹{item.basePrice}</span>
-                  )}
-                  <span className="text-lg font-bold text-price">₹{item.discountedPrice}</span>
+                    {/* Price & Arrow */}
+                    <div className="px-1 mt-auto">
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-sm sm:text-lg font-bold text-brand">₹{item.discountedPrice}</span>
+                          {item.discount > 0 && (
+                            <span className="text-[10px] md:text-xs text-brand/50 line-through">₹{item.basePrice}</span>
+                          )}
+                        </div>
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
+                          <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Link>
             );

@@ -14,7 +14,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-gray-100 text-black "
+        className="mt-4"
       >
         {children}
       </m.div>

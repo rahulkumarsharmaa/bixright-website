@@ -6,7 +6,7 @@ import {
   Search,
   User,
   Heart,
-  ShoppingBag,
+  ShoppingCart,
   Menu,
   X,
   Phone,
@@ -58,6 +58,7 @@ export default function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isFooterExpanded, setIsFooterExpanded] = useState(true);
 
   const [isDesktop, setIsDesktop] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -128,7 +129,41 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const [token, setToken] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, [pathname, mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!token) {
+      setUserName(null);
+      return;
+    }
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/customer/get-profile`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+            cache: "no-store",
+          }
+        );
+        const data = await res.json();
+        if (data?.success && data?.data) {
+          const profile = data.data;
+          setUserName(profile.firstName || profile.lastName || "User");
+        }
+      } catch (err) {
+        console.error("fetchProfile error in header", err);
+      }
+    };
+    fetchProfile();
+  }, [token]);
 
   useEffect(() => {
     const checkIsDesktop = () => setIsDesktop(window.innerWidth >= 768);
@@ -136,21 +171,20 @@ export default function Header() {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 10);
 
-      if (currentScrollY <= 10) {
+      if (currentScrollY <= 5) {
         setVisible(true);
         lastScrollY.current = currentScrollY;
         return;
       }
 
       const diff = currentScrollY - lastScrollY.current;
-      if (Math.abs(diff) > 15) {
-        if (diff > 0 && currentScrollY > 100) {
-          if (!mobileMenuOpen && !mobileSearchOpen && !userDropdown && !activeMenu && !showSuggestions) {
-            setVisible(false);
-          }
-        } else {
-          setVisible(true);
+      if (diff > 2) {
+        if (!mobileMenuOpen && !mobileSearchOpen && !userDropdown && !activeMenu && !showSuggestions) {
+          setVisible(false);
         }
+        lastScrollY.current = currentScrollY;
+      } else if (diff < -1) {
+        setVisible(true);
         lastScrollY.current = currentScrollY;
       }
     };
@@ -258,7 +292,10 @@ export default function Header() {
     [router]
   );
 
-  const openMobileMenu = useCallback(() => setMobileMenuOpen(true), []);
+  const openMobileMenu = useCallback(() => {
+    setMobileMenuOpen(true);
+    setIsFooterExpanded(true);
+  }, []);
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
     setActiveMenu(null);
@@ -285,6 +322,8 @@ export default function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setToken(null);
+    setUserName(null);
     window.location.href = "/";
   };
 
@@ -292,18 +331,16 @@ export default function Header() {
     if (!showSuggestions || searchText.length <= 2) return null;
 
     return (
-      <div className="absolute top-full left-0 right-0 bg-white shadow-xl rounded-b-lg border border-gray-100 mt-1 max-h-[60vh] overflow-y-auto z-50">
-        {isSearching ? (
-          <div className="p-4 text-center">
-            <div className="w-6 h-6 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-            <p className="text-gray-400 text-xs">Searching...</p>
-          </div>
-        ) : searchResults.length > 0 ? (
-          <div>
-            {searchResults.map((p) => (
-              <>
-                {process.env.NEXT_PUBLIC_IMAGE_URL}${p.images?.[0]?.imageUrl}
-
+      <div className="absolute top-full left-0 right-0 bg-brand-light shadow-sm rounded-b-2xl overflow-hidden z-50">
+        <div className="max-h-[60vh] overflow-y-auto py-2 custom-scrollbar">
+          {isSearching ? (
+            <div className="p-4 text-center">
+              <div className="w-6 h-6 border-2 border-brand/50 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-brand/20 text-xs">Searching...</p>
+            </div>
+          ) : searchResults.length > 0 ? (
+            <div>
+              {searchResults.map((p) => (
                 <Link
                   href={`/product/${p._id}`}
                   key={p._id}
@@ -312,79 +349,79 @@ export default function Header() {
                     setMobileSearchOpen(false);
                   }}
                 >
-                  <div className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 group">
-                    <div className="w-10 h-10 relative flex-shrink-0 bg-gray-100 rounded overflow-hidden border border-gray-200">
+                  <div className="flex items-center gap-3 p-2 hover:bg-brand-light transition-colors border-b border-brand-light last:border-0 group">
+                    <div className="w-10 h-10 relative p-2 flex-shrink-0 bg-brand-light rounded-4xl overflow-hidden border border-brand-light/90">
                       <Image
                         src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${p.images?.[0]?.imageUrl}`}
                         alt={p.title}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="object-contain group-hover:scale-102 transition-transform duration-300"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate group-hover:text-gray-600 transition-colors">
+                      <p className="text-sm font-medium text-brand/90 truncate group-hover:text-brand transition-colors">
                         {p.title}
                       </p>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600 font-bold">₹{p.discountedPrice}</span>
+                        <span className="text-xs text-brand font-bold">₹{p.discountedPrice}</span>
                         {typeof p.discountedPrice === 'number' && p.basePrice > p.discountedPrice && (
-                          <span className="text-[10px] text-gray-400 line-through">₹{p.basePrice}</span>
+                          <span className="text-[10px] text-brand/80 line-through">₹{p.basePrice}</span>
                         )}
                       </div>
                     </div>
                   </div>
                 </Link>
-              </>
-            ))}
-            <button
-              onClick={() => {
-                router.push(`/search?query=${encodeURIComponent(searchText)}`);
-                setShowSuggestions(false);
-                setMobileSearchOpen(false);
-              }}
-              className="w-full py-2.5 text-xs font-bold text-center text-gray-600 hover:bg-gray-50 transition-colors uppercase tracking-wide border-t border-gray-100"
-            >
-              See All Results
-            </button>
-          </div>
-        ) : (
-          <div className="p-6 text-center text-gray-400 text-sm">
-            <p>No results found for "{searchText}"</p>
-          </div>
-        )}
+              ))}
+              <button
+                onClick={() => {
+                  router.push(`/search?query=${encodeURIComponent(searchText)}`);
+                  setShowSuggestions(false);
+                  setMobileSearchOpen(false);
+                }}
+                className="w-full py-2 text-xs font-bold text-center text-brand hover:bg-brand-light transition-colors uppercase tracking-wide border-t border-brand-light"
+              >
+                See All Results
+              </button>
+            </div>
+          ) : (
+            <div className="p-6 text-center text-gray-400 text-sm">
+              <p>No results found for "{searchText}"</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
 
   return (
-    <m.header 
-      className="w-full fixed top-0 left-0 right-0 z-50 flex flex-col"
-      animate={{ y: visible ? "0%" : "-100%" }}
-      transition={{ type: "spring", stiffness: 300, damping: 30, mass: 0.8 }}
+    <m.header
+      className={`w-full fixed top-0 left-0 right-0 flex flex-col ${mobileMenuOpen ? "z-[9999]" : "z-50"}`}
     >
       {/* TOP BAR - PROMO */}
-      <div className="bg-gray-900 text-white text-[10px] md:text-xs py-2 px-4 md:px-8 flex justify-between items-center z-50 relative">
-        <div className="hidden md:flex items-center gap-4">
-          <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
-            <Phone size={12} /> +91 98765 43210
-          </span>
-          <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
-            <HelpCircle size={12} /> Help Center
-          </span>
-        </div>
-        <div className="flex-1 text-center md:text-right md:flex-none font-medium tracking-wide">
-          Free Shipping on all Electronics orders over ₹499! 🚀
+      <div className="bg-black  text-brand-light text-[10px] md:text-xs py-2 px-4 md:px-8  z-50 relative">
+        <div className="max-w-[1600px] mx-auto flex justify-between items-center">
+          <div className="hidden md:flex items-center gap-4">
+            <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
+              <Phone size={12} /> +91 98765 43210
+            </span>
+            <span className="flex items-center gap-1 opacity-80 hover:opacity-100 cursor-pointer">
+              <HelpCircle size={12} /> Help Center
+            </span>
+          </div>
+          <div className="flex-1 text-center md:text-right md:flex-none font-medium tracking-wide">
+            Free Shipping on all Electronics orders over ₹499! 🚀
+          </div>
         </div>
       </div>
 
       {/* MAIN HEADER */}
-      <div className={`w-full bg-white transition-shadow duration-200 ${isScrolled ? "shadow-md" : "border-b border-gray-100"} relative z-40`}>
-        <div className="container mx-auto max-w-[1400px] px-4 md:px-8 py-5 flex items-center gap-4 md:gap-8 justify-between">
+      <div className={`w-full bg-brand-light transition-shadow duration-200 ${isScrolled ? "shadow-md" : "border-b border-brand-light"} relative z-40`}>
+        <div className="container mx-auto max-w-[1600px] px-4 md:px-8 py-4 flex items-center gap-4 md:gap-8 justify-between">
 
           {/* MOBILE HAMBURGER */}
           <button
             onClick={openMobileMenu}
-            className="md:hidden p-2 -ml-2 text-gray-700 hover:text-black"
+            className="md:hidden p-2 -ml-2 text-brand/80 hover:text-brand"
           >
             <Menu size={22} />
           </button>
@@ -407,13 +444,13 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Search for laptop, mobile, accessories..."
-                className="w-full bg-gray-100 text-gray-900 px-4 py-2.5 pl-10 rounded-full outline-none focus:ring-2 focus:ring-gray-100 focus:bg-white transition-all border border-transparent focus:border-gray-600 text-sm placeholder:text-gray-500"
+                className="w-full bg-brand/5 text-brand px-4 py-2.5 pl-10 rounded-full outline-none transition-all border border-brand/10  text-sm placeholder:text-brand/40"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 onKeyDown={handleSearchEnter}
               />
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand/70" size={18} />
               {renderSearchResults()}
             </div>
           </div>
@@ -424,7 +461,7 @@ export default function Header() {
             {/* SEARCH - MOBILE ONLY */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 text-gray-700"
+              className="md:hidden p-2 text-brand"
             >
               <Search size={22} />
             </button>
@@ -433,16 +470,16 @@ export default function Header() {
             <div ref={userRef} className="relative hidden md:block">
               <button
                 onClick={handleAccount}
-                className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                className="flex items-center gap-2 hover:bg-brand/5 p-2 rounded-4xl transition-colors"
               >
-                <User size={22} className="text-gray-700" />
+                <User size={22} className="text-brand" />
                 <div className="flex flex-col items-start leading-none">
-                  <span className="text-[10px] text-gray-500 font-medium">
-                    {isMounted && token ? "Welcome" : "Sign In"}
+                  <span className="text-[10px] text-brand/90 font-medium">
+                    {isMounted && token ? "" : "Sign In"}
                   </span>
-                  <span className="text-xs font-bold text-gray-900">Account</span>
+                  <span className="text-xs font-bold text-brand">Account</span>
                 </div>
-                <ChevronDown size={14} className="text-gray-400" />
+                <ChevronDown size={14} className="text-brand" />
               </button>
 
               <AnimatePresence>
@@ -451,19 +488,18 @@ export default function Header() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden py-1 z-50"
+                    className="absolute right-0 top-full mt-2 w-48 bg-brand-light rounded-b-xl shadow-xl overflow-hidden z-50"
                   >
                     {!token ? (
                       <>
-                        <button onClick={() => { router.push("/user/login"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 font-medium">Login</button>
-                        <button onClick={() => { router.push("/user/signup"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 font-medium">Register</button>
+                        <button onClick={() => { router.push("/user/login"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-brand/5 font-medium">Login</button>
+                        <button onClick={() => { router.push("/user/signup"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-brand/5 font-medium">Register</button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => { router.push("/profile"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 font-medium">My Profile</button>
-                        <button onClick={() => { router.push("/orders"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 font-medium">My Orders</button>
-                        <div className="border-t border-gray-100 my-1"></div>
-                        <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium">Logout</button>
+                        <button onClick={() => { router.push("/profile"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-brand/5 font-medium">My Profile</button>
+                        <button onClick={() => { router.push("/orders"); setUserDropdown(false); }} className="block w-full text-left px-4 py-3 text-sm hover:bg-brand/5 font-medium">My Orders</button>
+                        <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm hover:bg-brand/5 font-medium hover:text-red-500">Logout</button>
                       </>
                     )}
                   </m.div>
@@ -474,22 +510,22 @@ export default function Header() {
             {/* WISHLIST */}
             <Link
               href="/wishlist"
-              className="hidden md:flex p-2 hover:bg-gray-50 rounded-full relative transition-colors group"
+              className="hidden md:flex p-2 hover:bg-brand/5 rounded-full relative transition-colors group"
             >
-              <Heart size={22} className="text-gray-700 group-hover:text-red-500 transition-colors" />
-              {wishlistItemCount > 0 && <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">{wishlistItemCount}</span>}
+              <Heart size={22} className="text-brand/80 group-hover:text-brand transition-colors" />
+              {wishlistItemCount > 0 && <span className="absolute top-0 right-0 w-4 h-4 bg-brand/70 text-brand-light text-[10px] flex items-center justify-center rounded-full font-bold">{wishlistItemCount}</span>}
             </Link>
 
             {/* CART */}
             <Link
               href="/cart"
-              className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-lg transition-colors group"
+              className="flex items-center gap-2 hover:bg-brand/5 p-2 rounded-4xl transition-colors group"
             >
               <div className="relative">
-                <ShoppingBag size={22} className="text-gray-700 group-hover:text-gray-600 transition-colors" />
-                {cartItemCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-gray-600 text-white text-[10px] flex items-center justify-center rounded-full font-bold">{cartItemCount}</span>}
+                <ShoppingCart size={22} className="text-brand/80 group-hover:text-brand transition-colors" />
+                {cartItemCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand/70 text-brand-light text-[10px] flex items-center justify-center rounded-full font-bold">{cartItemCount}</span>}
               </div>
-              <span className="hidden md:block text-sm font-bold text-gray-900 max-w-[80px] truncate">
+              <span className="hidden md:block text-sm font-bold text-brand/90 max-w-[80px] truncate">
                 {cartItemCount > 0 ? "Cart" : "Cart"}
               </span>
             </Link>
@@ -498,9 +534,18 @@ export default function Header() {
         </div>
 
         {/* BOTTOM NAV - CATEGORIES (Desktop) */}
-        <div className="hidden md:block border-t border-gray-100 bg-white">
-          <div className="container mx-auto max-w-[1400px] px-8">
-            <div className="flex items-center gap-2 text-[13px] font-semibold text-gray-700 overflow-x-auto hide-scrollbar">
+        <m.div
+          initial={{ height: "auto", opacity: 1, borderTopWidth: "1px" }}
+          animate={{
+            height: visible ? "auto" : 0,
+            opacity: visible ? 1 : 0,
+            borderTopWidth: visible ? "1px" : "0px"
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="hidden md:block border border-brand/5 bg-brand-light overflow-hidden"
+        >
+          <div className="container mx-auto max-w-[1600px] px-6">
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-brand overflow-x-auto hide-scrollbar">
               {mainCategories.map((cat) => (
                 <div
                   key={cat._id}
@@ -543,17 +588,14 @@ export default function Header() {
                     }, 200);
                   }}
                 >
-                  <span className={`transition-colors whitespace-nowrap hover:bg-gray-100 rounded-full px-4 py-2 transition-colors duration-300 ${activeMenu === cat._id ? "text-gray-600" : "group-hover:text-gray-600"}`}>
+                  <span className={`whitespace-nowrap hover:bg-brand/5 rounded-full px-4 py-2 transition-colors duration-300 ${activeMenu === cat._id ? "text-brand/90" : "group-hover:text-brand"}`}>
                     {cat.title}
                   </span>
-                  {activeMenu === cat._id && (
-                    <m.div layoutId="activeNavLine" className="h-0.5 w-full bg-gray-600 absolute bottom-0 left-0" />
-                  )}
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </m.div>
 
         {/* MEGA MENU DROPDOWN */}
         <AnimatePresence>
@@ -578,7 +620,7 @@ export default function Header() {
                 }, 200);
               }}
             >
-              <div className="bg-white/95 backdrop-blur-lg rounded-b-xl shadow-2xl border border-gray-100 py-3 min-w-[240px] bg-gray-100">
+              <div className="bg-brand-light backdrop-blur-lg rounded-b-xl shadow-lg border border-brand-5 py-2 min-w-[50px] max-w-2xl">
                 {(subMap[activeMenu] ?? []).length > 0 ? (
                   (subMap[activeMenu] ?? []).map((sub, idx) => (
                     <m.button
@@ -589,15 +631,15 @@ export default function Header() {
                       onClick={() => {
                         if (activeCategoryTitle) goToSub(activeMenu, activeCategoryTitle, sub);
                       }}
-                      className="block w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:text-gray-600 hover:bg-gray-50 transition-colors font-medium relative group"
+                      className="block w-full text-left px-5 py-2 text-sm text-brand/80 hover:text-brand hover:bg-brand/5 transition-colors font-medium relative group cursor-pointer"
                     >
                       {sub.title}
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-gray-600 group-hover:h-1/2 transition-all duration-300 rounded-r-md"></span>
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-brand group-hover:h-1/2 transition-all duration-300 rounded-r-md"></span>
                     </m.button>
                   ))
                 ) : (
-                  <div className="px-5 py-3 text-gray-400 text-xs flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border-2 border-gray-200 border-t-gray-600 animate-spin"></div>
+                  <div className="px-5 py-3 text-brand/20 text-xs flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border-2 border-brand/5 border-t-brand/15 animate-spin"></div>
                     Loading...
                   </div>
                 )}
@@ -611,20 +653,20 @@ export default function Header() {
           {mobileSearchOpen && (
             <m.div
               initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }}
-              className="md:hidden border-t border-gray-100 overflow-hidden bg-white"
+              className="md:hidden border-t border-brand/10 bg-brand-light"
             >
               <div className="p-4 relative">
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="w-full bg-gray-100 px-4 py-3 pl-10 rounded-lg text-sm outline-none focus:bg-white focus:ring-1 focus:ring-gray-600 transition-all border border-transparent focus:border-gray-600"
+                  className="w-full bg-brand/5 px-4 py-3 pl-10 rounded-4xl text-sm outline-none focus:bg-brand/5 focus:ring-1 focus:ring-brand/50 transition-all border border-transparent focus:border-brand/50"
                   autoFocus
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
                   onKeyDown={handleSearchEnter}
                 />
-                <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-brand" size={18} />
                 {renderSearchResults()}
               </div>
             </m.div>
@@ -640,94 +682,126 @@ export default function Header() {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 w-[80%] max-w-[320px] h-full bg-white shadow-2xl z-50 overflow-y-auto"
+              transition={{ type: "tween", ease: "easeOut", duration: 0.25 }}
+              className="fixed top-0 left-0 w-[80%] max-w-[320px] h-full bg-brand-light shadow-2xl z-[50] flex flex-col will-change-transform"
             >
               {/* Mobile Menu Header */}
-              <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                <div className="font-bold text-lg text-gray-900 flex items-center gap-2">
+              <div className="p-5 border-b border-brand/40 flex items-center justify-between bg-brand-light/80 flex-shrink-0">
+                <div className="font-bold text-lg text-brand flex items-center gap-2">
                   <User size={20} />
-                  {token ? "Hello, User" : "Welcome Guest"}
+                  {token ? `Hello, ${userName || "User"}` : "Welcome Guest"}
                 </div>
-                <button onClick={closeMobileMenu} className="p-2 bg-white rounded-full shadow-sm"><X size={18} /></button>
+                <button onClick={closeMobileMenu} className="p-2 bg-brand/5 text-brand rounded-full"><X size={18} /></button>
               </div>
-
-              {/* Quick Actions */}
-              <div className="grid grid-cols-2 gap-4 p-5 border-b border-gray-100">
-                {!token ? (
-                  <>
-                    <button onClick={() => { router.push("/user/login"); closeMobileMenu(); }} className="bg-gray-600 text-white py-2.5 rounded-lg text-sm font-semibold shadow-gray-200 shadow-md">Login</button>
-                    <button onClick={() => { router.push("/user/signup"); closeMobileMenu(); }} className="bg-white border border-gray-200 text-gray-900 py-2.5 rounded-lg text-sm font-semibold">Sign Up</button>
-                  </>
-                ) : (
-                  <button onClick={handleLogout} className="col-span-2 bg-red-50 text-red-600 py-2.5 rounded-lg text-sm font-semibold">Logout</button>
+ 
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Quick Actions (only visible when guest/logged-out) */}
+                {!token && (
+                  <div className="grid grid-cols-2 gap-4 p-5 border-b border-brand-light/80">
+                    <button onClick={() => { router.push("/user/login"); closeMobileMenu(); }} className="bg-brand text-brand-light py-2.5 rounded-lg text-sm font-semibold">Login</button>
+                    <button onClick={() => { router.push("/user/signup"); closeMobileMenu(); }} className="bg-brand-light text-brand border border-brand py-2.5 rounded-lg text-sm font-semibold">Sign Up</button>
+                  </div>
                 )}
-              </div>
-
-              {/* Categories */}
-              <div className="p-5">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop By Category</h3>
-                <div className="space-y-2">
-                  {mainCategories.map(cat => (
-                    <div key={cat._id} className="border-b border-gray-100 last:border-0 pb-2">
-                      <div className="flex items-center justify-between w-full py-2">
-                        <button
-                          onClick={() => {
-                            router.push(`/category/${cat._id}?categoryName=${encodeURIComponent(cat.title)}`);
-                            closeMobileMenu();
-                          }}
-                          className="text-[15px] font-medium text-gray-800 flex-1 text-left"
-                        >
-                          {cat.title}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryClick(cat);
-                          }}
-                          className="p-2"
-                        >
-                          <ChevronDown size={16} className={`transition-transform duration-200 ${activeMenu === cat._id ? "rotate-180" : ""}`} />
-                        </button>
-                      </div>
-
-                      <AnimatePresence>
-                        {activeMenu === cat._id && (
-                          <m.div
-                            initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }}
-                            className="overflow-hidden bg-gray-50 rounded-lg"
+ 
+                {/* Categories */}
+                <div className="p-5">
+                  <h3 className="text-xs font-bold text-brand/80 uppercase tracking-wider mb-2">Shop By Category</h3>
+                  <div className="space-y-1">
+                    {mainCategories.map(cat => (
+                      <div key={cat._id} className="border-b border-brand/5 last:border-0">
+                        <div className="flex items-center justify-between w-full py-2">
+                          <button
+                            onClick={() => {
+                              router.push(`/category/${cat._id}?categoryName=${encodeURIComponent(cat.title)}`);
+                              closeMobileMenu();
+                            }}
+                            className="text-[15px] font-medium text-brand flex-1 text-left"
                           >
-                            {(subMap[cat._id] ?? []).map(sub => (
-                              <button
-                                key={sub._id}
-                                onClick={() => goToSub(cat._id, cat.title, sub)}
-                                className="block w-full text-left px-4 py-3 text-sm text-gray-600 border-b border-white last:border-0"
-                              >
-                                {sub.title}
-                              </button>
-                            ))}
-                          </m.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ))}
+                            {cat.title}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCategoryClick(cat);
+                            }}
+                            className="p-2"
+                          >
+                            <ChevronDown size={16} className={`transition-transform duration-200 ${activeMenu === cat._id ? "rotate-180" : ""}`} />
+                          </button>
+                        </div>
+ 
+                        <AnimatePresence>
+                          {activeMenu === cat._id && (
+                            <m.div
+                              initial={{ height: 0 }}
+                              animate={{ height: "auto" }}
+                              exit={{ height: 0 }}
+                              transition={{ duration: 0.2, ease: "easeInOut" }}
+                              className="overflow-hidden bg-brand/5 rounded-lg"
+                            >
+                              {(subMap[cat._id] ?? []).map(sub => (
+                                <button
+                                  key={sub._id}
+                                  onClick={() => goToSub(cat._id, cat.title, sub)}
+                                  className="block w-full text-left px-4 py-3 text-sm text-brand border-b border-brand/10 last:border-0"
+                                >
+                                  {sub.title}
+                                </button>
+                              ))}
+                            </m.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              {/* Footer Links */}
-              <div className="bg-gray-50 p-5 mt-auto">
-                <div className="space-y-4 text-sm text-gray-600">
-                  <Link href="/profile" className="flex items-center gap-3"><User size={18} /> Account Settings</Link>
-                  <Link href="/wishlist" className="flex items-center gap-3"><Heart size={18} /> My Wishlist</Link>
-                  <Link href="/orders" className="flex items-center gap-3"><ShoppingBag size={18} /> My Orders</Link>
-                  <div className="flex items-center gap-3"><HelpCircle size={18} /> Help Center</div>
+ 
+              {/* Footer Links & Logout */}
+              {token && (
+                <div className="bg-brand/5 border-t border-brand/10 flex-shrink-0 rounded-4xl relative pt-6 pb-5 px-5">
+                  <button
+                    onClick={() => setIsFooterExpanded(!isFooterExpanded)}
+                    className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-light text-brand rounded-full p-1.5 shadow-md border border-brand/10 hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+                  >
+                    <ChevronDown size={14} className={`transition-transform duration-300 ${isFooterExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isFooterExpanded && (
+                      <m.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ type: "tween", ease: "easeInOut", duration: 0.2 }}
+                        className="overflow-hidden animate-none"
+                      >
+                        <div className="space-y-4 text-sm text-gray-600 mb-5 pt-1">
+                          <Link href="/profile" onClick={closeMobileMenu} className="flex items-center gap-3"><User size={18} /> Account Settings</Link>
+                          <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3"><Heart size={18} /> My Wishlist</Link>
+                          <Link href="/orders" onClick={closeMobileMenu} className="flex items-center gap-3"><ShoppingCart size={18} /> My Orders</Link>
+                          <div className="flex items-center gap-3"><HelpCircle size={18} /> Help Center</div>
+                        </div>
+                      </m.div>
+                    )}
+                  </AnimatePresence>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      closeMobileMenu();
+                    }}
+                    className="w-full bg-brand/80 hover:bg-brand text-brand-light transition-colors py-2 sm:py-3 rounded-4xl text-sm font-semibold flex items-center justify-center gap-2 mt-2"
+                  >
+                    Logout
+                  </button>
                 </div>
-              </div>
-
+              )}
+ 
             </m.div>
             <m.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 z-[40]"
               onClick={closeMobileMenu}
             />
           </>

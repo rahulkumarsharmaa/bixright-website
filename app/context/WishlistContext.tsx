@@ -17,6 +17,9 @@ export type WishlistItem = {
   title: string;
   image: string;
   price: number;
+  basePrice?: number;
+  discountedPrice?: number;
+  discount?: number;
   color?: string;
   size?: string;
   brandName?: string;

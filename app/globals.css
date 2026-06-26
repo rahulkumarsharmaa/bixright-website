@@ -90,7 +90,8 @@ body {
 
 /* Custom Thin Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 3px;
+  height: 3px;
   /* narrow width */
 }
 
@@ -100,20 +101,34 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  /* light gray thumb */
+  background: transparent;
+  /* hidden by default */
   border-radius: 10px;
   /* rounded */
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  /* shown only on container hover */
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
   background: #a0a0a0;
-  /* darker on hover */
+  /* darker on hover over thumb */
 }
 
 /* Firefox */
-.custom-scrollbar::-moz-scrollbar-track {
-  background: transparent;
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  /* hidden by default */
+  transition: scrollbar-color 0.3s ease;
+  overflow: auto;
+}
+
+.custom-scrollbar:hover {
+  scrollbar-color: #c1c1c1 transparent;
+  /* shown only on hover */
 }
 
 :root {
@@ -151,9 +166,10 @@ body {
   --sidebar-ring: oklch(0.705 0.015 286.067);
 
   /* Brand Colors managed here */
-  --brand-primary: #7c3aed; /* Default: Violet/Purple */
-  --brand-primary-hover: #6d28d9;
+  --brand-primary: #135193;
+  --brand-primary-hover: #135193;
   --brand-primary-light: #f5f3ff;
+  --brand-primary-black: #111827;
   --price-green: #16a34a;
   --discount-red: #dc2626;
 }

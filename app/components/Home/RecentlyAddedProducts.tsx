@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { m } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+
 interface ProductImage {
   imageUrl: string;
   imageId: string;
@@ -51,23 +53,23 @@ export default function RecentlyAddedProducts() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 px-1">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-1">
-            Shop Smart Electronics & Premium Accessories
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-1">
+            Smart Electronics & Premium Accessories
           </h2>
-          <p className="text-sm text-gray-500 capitalize font-semibold">Top gadgets at the best prices</p>
+          <p className="text-xs sm:text-sm text-gray-500 capitalize font-semibold">Top gadgets at the best prices</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mt-4">
         {loading &&
           Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="bg-white border border-gray-100 rounded-4xl p-4 shadow-sm animate-pulse">
-              <div className="bg-gray-200 aspect-square rounded-4xl mb-4 w-full"></div>
-              <div className="h-4 bg-gray-200 rounded-4xl w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded-4xl w-1/2"></div>
-              <div className="h-10 bg-gray-200 rounded-4xl w-full mt-4"></div>
+            <div key={index} className="bg-brand/3 border border-brand/10 rounded-2xl lg:rounded-4xl p-3 md:p-4 shadow-sm animate-pulse">
+              <div className="bg-brand/10 aspect-square rounded-xl md:rounded-2xl mb-4 w-full"></div>
+              <div className="h-3.5 bg-brand/10 rounded-full w-3/4 mb-2"></div>
+              <div className="h-3.5 bg-brand/10 rounded-full w-1/2"></div>
+              <div className="h-8 bg-brand/10 rounded-full w-full mt-4"></div>
             </div>
           ))}
 
@@ -81,47 +83,54 @@ export default function RecentlyAddedProducts() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group bg-white border border-gray-100/80 rounded-4xl overflow-hidden p-2 transition-all duration-300"
+                className="group bg-brand/3 border border-brand/10 rounded-2xl lg:rounded-4xl overflow-hidden p-1.5 sm:p-2 transition-all duration-300 flex flex-col justify-between"
               >
                 <Link
                   href={`/product/${product._id}?categoryName=${product.subCategoryName}&subCategoryName=${product.subCategoryName}`}
-                  className="block relative p-2"
+                  className="relative h-full flex flex-col justify-between"
                 >
-                  <div className="relative aspect-[4/5] md:aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3">
-                    {cover ? (
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${cover.imageUrl}`}
-                        alt={product.title}
-                        fill
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                        No Image
-                      </div>
-                    )}
+                  <div>
+                    <div className="relative aspect-square bg-brand-light overflow-hidden mb-3 rounded-3xl flex-shrink-0">
+                      {cover ? (
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${cover.imageUrl}`}
+                          alt={product.title}
+                          fill
+                          className="object-contain group-hover:scale-102 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-brand/5 flex items-center justify-center text-brand/40 text-xs">
+                          No Image
+                        </div>
+                      )}
 
-                    {product.discount > 0 && (
-                      <span className="absolute top-2 left-2 bg-discount text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                        -{product.discount}%
-                      </span>
-                    )}
+                      {product.discount > 0 && (
+                        <span className="absolute top-2 left-2 bg-brand text-brand-light text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-full">
+                          -{product.discount}%
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="px-1">
+                      <p className="text-[10px] text-brand/80 font-semibold uppercase tracking-wider mb-1">
+                        {product.subCategoryName}
+                      </p>
+                      <h3 className="text-brand/90 font-bold text-xs sm:text-sm md:text-base leading-snug line-clamp-2 mb-2 min-h-[2rem] sm:min-h-[2.5rem] group-hover:text-brand transition-colors">
+                        {product.title}
+                      </h3>
+                    </div>
                   </div>
 
-                  <div className="px-1">
-                    <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider mb-1">
-                      {product.subCategoryName}
-                    </p>
-                    <h3 className="text-gray-900 font-bold text-sm md:text-base leading-snug line-clamp-2 mb-2 min-h-[2.5rem]">
-                      {product.title}
-                    </h3>
-
+                  <div className="px-1 mt-auto">
                     <div className="flex items-center justify-between mt-2">
-                      <div>
-                        <span className="text-lg font-bold text-gray-900">₹{product.discountedPrice}</span>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-sm sm:text-lg font-bold text-brand">₹{product.discountedPrice}</span>
                         {product.discountedPrice < product.basePrice && (
-                          <span className="text-xs text-gray-400 line-through ml-2">₹{product.basePrice}</span>
+                          <span className="text-[10px] md:text-xs text-brand/50 line-through">₹{product.basePrice}</span>
                         )}
+                      </div>
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
+                        <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
                       </div>
                     </div>
                   </div>

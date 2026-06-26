@@ -102,8 +102,7 @@ const HeroCarousel = () => {
   }
 
   return (
-    <div
-      className="relative w-full h-[50vh] xs:h-[55vh] md:h-[65vh] lg:h-[80vh] xl:h-[85vh] overflow-hidden bg-black group"
+    <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-black group"
       onMouseEnter={pauseAutoPlay}
       onMouseLeave={resumeAutoPlay}
     >

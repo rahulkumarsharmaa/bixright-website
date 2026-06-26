@@ -45,7 +45,7 @@ export default function FilterSidebar({ options }: Props) {
       )}
 
       {/* Example Rating (Static for visual "Amazon feel" if data not available) */}
-      <FilterSection title="Avg. Customer Review" defaultOpen={true}>
+      {/* <FilterSection title="Avg. Customer Review" defaultOpen={true}>
         <div className="space-y-2 cursor-pointer">
           {[4, 3, 2, 1].map((stars) => (
             <div key={stars} className="flex items-center gap-2 hover:bg-gray-50 p-1 rounded">
@@ -58,7 +58,7 @@ export default function FilterSidebar({ options }: Props) {
             </div>
           ))}
         </div>
-      </FilterSection>
+      </FilterSection> */}
     </div>
   );
 }
@@ -72,7 +72,7 @@ function FilterSection({ title, children, defaultOpen = false }: { title: string
     <div className="border-b border-gray-200 pb-5 last:border-0 last:pb-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full font-bold text-sm text-gray-900 mb-2 hover:text-gray-600 transition-colors"
+        className="flex items-center justify-between w-full font-bold text-sm text-brand/90 mb-2 hover:text-brand transition-colors"
       >
         {title}
         {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -116,7 +116,7 @@ function CheckboxGroup({ type, options }: { type: string, options: Option[] }) {
   return (
     <div className="space-y-1.5">
       {visibleOptions.map(opt => (
-        <label key={opt.id} className="flex items-start gap-2.5 cursor-pointer group hover:bg-gray-50 p-1 rounded -ml-1">
+        <label key={opt.id} className="flex items-start gap-2.5 cursor-pointer group hover:bg-brand-light p-1 rounded -ml-1">
           <div className="relative flex items-center mt-0.5">
             <input
               type="checkbox"
@@ -278,10 +278,10 @@ function PriceFilter({ range }: { range?: priceOption }) {
       `}</style>
 
       {/* Slider Visuals */}
-      <div className="range-slider bg-gray-200 rounded-full h-1 mt-4 mb-8 relative flex items-center">
+      <div className="range-slider bg-brand-light rounded-full h-1 mt-4 mb-8 relative flex items-center">
         {/* Active Range Bar */}
         <div
-          className="absolute h-full bg-black rounded-full z-10"
+          className="absolute h-full bg-brand rounded-full z-10"
           style={{
             left: `${getPercent(minVal)}%`,
             width: `${getPercent(maxVal) - getPercent(minVal)}%`,
@@ -319,7 +319,7 @@ function PriceFilter({ range }: { range?: priceOption }) {
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-1">
           <div className="relative w-full">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand text-xs">₹</span>
             <input
               type="number"
               min={minLimit}
@@ -329,12 +329,12 @@ function PriceFilter({ range }: { range?: priceOption }) {
                 const val = Math.max(minLimit, Math.min(Number(e.target.value), maxLimit));
                 setMinVal(val);
               }}
-              className="w-full pl-6 pr-2 py-2 border border-gray-200 rounded-lg text-xs font-medium focus:border-black focus:ring-1 focus:ring-black outline-none transition-all bg-gray-50/50"
+              className="w-full pl-6 pr-2 py-2 border border-brand/50 rounded-4xl text-xs font-medium  outline-none transition-all bg-gray-50/50"
             />
           </div>
           <span className="text-gray-300">-</span>
           <div className="relative w-full">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand text-xs">₹</span>
             <input
               type="number"
               min={minLimit}
@@ -344,13 +344,13 @@ function PriceFilter({ range }: { range?: priceOption }) {
                 const val = Math.min(maxLimit, Math.max(Number(e.target.value), minLimit));
                 setMaxVal(val);
               }}
-              className="w-full pl-6 pr-2 py-2 border border-gray-200 rounded-lg text-xs font-medium focus:border-black focus:ring-1 focus:ring-black outline-none transition-all bg-gray-50/50"
+              className="w-full pl-6 pr-2 py-2 border border-brand/50 rounded-4xl text-xs font-medium  outline-none transition-all bg-gray-50/50"
             />
           </div>
         </div>
         <button
           onClick={handleApply}
-          className="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 active:scale-95 transition-all shadow-sm"
+          className="px-4 py-2 bg-brand text-brand-light text-xs font-bold rounded-4xl hover:bg-brand active:scale-95 transition-all shadow-sm"
         >
           GO
         </button>

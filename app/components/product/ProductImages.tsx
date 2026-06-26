@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import type { Product } from "@/app/types/product";
 import Portal from "../Portal";
@@ -33,6 +33,7 @@ export default function ProductImages({
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [openModal, setOpenModal] = useState(false);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!openModal) return; // attach only when popup is open
@@ -146,6 +147,19 @@ export default function ProductImages({
   const displayImage =
     active || allImages.find((i) => i.isCover) || allImages[0];
 
+  // Synchronize mobile swiper when active thumbnail changes
+  useEffect(() => {
+    if (!mobileScrollRef.current) return;
+    const index = showImages.findIndex((img) => img._id === displayImage._id);
+    if (index !== -1) {
+      const container = mobileScrollRef.current;
+      const targetScrollLeft = index * container.clientWidth;
+      if (Math.abs(container.scrollLeft - targetScrollLeft) > 10) {
+        container.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
+      }
+    }
+  }, [displayImage, showImages]);
+
   if (!displayImage) return null;
 
   return (
@@ -171,8 +185,8 @@ export default function ProductImages({
                 transition={{ delay: index * 0.05, duration: 0.2 }}
                 className={`w-14 h-14 md:w-16 md:h-16 relative overflow-hidden rounded-4xl flex-shrink-0 snap-start transition-all duration-200 border-2
                            ${isActive
-                    ? "border-black shadow-sm"
-                    : "border-gray-200 hover:border-gray-400"
+                    ? "border-brand shadow-sm"
+                    : "border-brand/10 hover:border-brand/30"
                   }`}
               >
                 <Image
@@ -188,43 +202,72 @@ export default function ProductImages({
       )}
 
       {/* Main Image Display */}
-      <m.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="flex-1 relative border border-gray-100 mt-4 rounded-4xl overflow-hidden cursor-zoom-in group w-full"
-        style={{ aspectRatio: "1/1", maxHeight: "700px" }}
-        onClick={() => setOpenModal(true)}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          setZoomPos({
-            x: ((e.clientX - rect.left) / rect.width) * 100,
-            y: ((e.clientY - rect.top) / rect.height) * 100,
-          });
-        }}
-      >
-        <AnimatePresence mode="wait">
-          <m.div
-            key={displayImage._id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 flex items-center justify-center p-4 bg-white"
-          >
-            <Image
-              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${displayImage.imageUrl}`}
-              alt={alt}
-              fill
-              priority
-              className="object-contain"
-            />
-          </m.div>
-        </AnimatePresence>
+      <div className="flex-grow md:flex-1 relative mt-4 md:mt-0 overflow-hidden w-full">
+        {/* Mobile Swiper (hidden on desktop) */}
+        <div
+          ref={mobileScrollRef}
+          className="md:hidden flex overflow-x-auto snap-x snap-mandatory scroll-smooth w-full aspect-square relative border border-brand/10 rounded-3xl bg-white no-scrollbar"
+          onScroll={(e) => {
+            const container = e.currentTarget;
+            if (container.clientWidth === 0) return;
+            const index = Math.round(container.scrollLeft / container.clientWidth);
+            if (showImages[index] && displayImage._id !== showImages[index]._id) {
+              setActive(showImages[index]);
+            }
+          }}
+        >
+          {showImages.map((img) => (
+            <div key={img._id} className="snap-center w-full h-full relative shrink-0">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${img.imageUrl}`}
+                alt={alt}
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
 
-        {/* Hover Zoom Hint */}
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300" />
-      </m.div>
+        {/* Desktop Display with Hover Zoom */}
+        <m.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="hidden md:block relative border border-brand/10 rounded-4xl overflow-hidden cursor-zoom-in group w-full"
+          style={{ aspectRatio: "1/1", maxHeight: "700px" }}
+          onClick={() => setOpenModal(true)}
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setZoomPos({
+              x: ((e.clientX - rect.left) / rect.width) * 100,
+              y: ((e.clientY - rect.top) / rect.height) * 100,
+            });
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <m.div
+              key={displayImage._id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 flex items-center justify-center p-4 bg-white"
+            >
+              <Image
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${displayImage.imageUrl}`}
+                alt={alt}
+                fill
+                priority
+                className="object-cover"
+              />
+            </m.div>
+          </AnimatePresence>
+
+          {/* Hover Zoom Hint */}
+          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300" />
+        </m.div>
+      </div>
 
       <Portal>
         <AnimatePresence>
@@ -241,17 +284,17 @@ export default function ProductImages({
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="bg-white max-w-[60rem] w-full h-[85vh] flex overflow-hidden relative p-0 rounded-4xl shadow-2xl"
+                className="bg-white max-w-[60rem] w-full h-[85vh] flex overflow-hidden relative p-0 rounded-4xl shadow-2xl border border-brand/10"
                 onClick={(e) => e.stopPropagation()} // prevent overlay close when clicking inside
               >
                 <button
                   onClick={() => setOpenModal(false)}
-                  className="absolute top-4 right-4 z-[70] bg-white/10 hover:bg-black text-black hover:text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-md border border-gray-200 transition-all"
+                  className="absolute top-4 right-4 z-[70] bg-brand/10 hover:bg-brand text-brand hover:text-brand-light px-4 py-2 rounded-full text-sm font-bold backdrop-blur-md border border-brand/20 transition-all"
                 >
                   Close
                 </button>
 
-                <div className="w-1/4 bg-gray-50 border-r overflow-y-auto custom-scrollbar p-3 space-y-3">
+                <div className="w-1/4 bg-brand/3 border-r border-brand/10 overflow-y-auto custom-scrollbar p-3 space-y-3">
                   {allImages
                     .filter((img) => img.color)
                     .map((img) => (
@@ -260,8 +303,8 @@ export default function ProductImages({
                         type="button"
                         onClick={() => setActive(img)}
                         className={`w-full aspect-[3/4] relative rounded-md overflow-hidden border ${active?._id === img._id
-                          ? "border-black"
-                          : "border-gray-300"
+                          ? "border-brand"
+                          : "border-brand/10"
                           }`}
                       >
                         <Image
@@ -293,7 +336,7 @@ export default function ProductImages({
                       src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${active?.imageUrl || displayImage.imageUrl}`}
                       alt={alt}
                       fill
-                      className="object-contain"
+                      className="object-cover"
                       style={{
                         transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                         transform: isZoomed ? "scale(1.5)" : "scale(1)",
