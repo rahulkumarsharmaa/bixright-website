@@ -119,7 +119,7 @@ export default function FilterDropdown({
             }}
             aria-haspopup="menu"
             aria-expanded={open}
-            className="inline-flex items-center justify-center  px-4 py-2 rounded-full text-sm w-38 font-medium transition-all bg-white border border-gray-300 hover:shadow-sm focus:shadow-outline"
+            className="inline-flex items-center justify-center  px-4 py-2 rounded-full text-sm w-38 font-medium transition-all bg-brand-light border border-gray-300 hover:shadow-sm focus:shadow-outline"
           >
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium text-black`}
@@ -151,7 +151,7 @@ export default function FilterDropdown({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.98 }}
                   transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
-                  className="absolute left-1/2 -translate-x-[60%] mt-1 w-[min(160px,70vw)] bg-white  border border-gray-200 rounded-2xl shadow-lg z-50 overflow-hidden"
+                  className="absolute left-1/2 -translate-x-[60%] mt-1 w-[min(160px,70vw)] bg-brand-light  border border-gray-200 rounded-3xl shadow-lg z-50 overflow-hidden"
                   role="menu"
                   aria-orientation="vertical"
                 >
@@ -168,10 +168,10 @@ export default function FilterDropdown({
                             btnRef.current?.focus();
                           }}
                           onMouseEnter={() => (focusedIndexRef.current = i)}
-                          className={`filter-item w-full  text-left px-4 py-2 rounded-lg text-sm transition-all flex items-center justify-start ${
+                          className={`filter-item w-full  text-left px-4 py-2 rounded-4xl text-sm transition-all flex items-center justify-start ${
                             active
-                              ? "bg-gray-900 text-white shadow-lg"
-                              : "bg-white text-gray-700 hover:bg-gray-50"
+                              ? "bg-brand text-brand-light shadow-lg"
+                              : "bg-brand-light text-brand hover:bg-brand/10"
                           }`}
                         >
                           <span>{f.label}</span>

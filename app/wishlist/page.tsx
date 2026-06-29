@@ -10,7 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
 
-export default function Wishlist() {
+export default function Wishlist({ isEmbedded = false }: { isEmbedded?: boolean }) {
   const { items, removeWishlist } = useWishlist();
   const { addToCart } = useCart();
   const router = useRouter();
@@ -87,9 +87,9 @@ export default function Wishlist() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-light text-brand py-12 px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 relative overflow-hidden font-sans">
+    <div className={`${isEmbedded ? 'bg-transparent py-2 pt-2 px-0 md:pt-2' : 'min-h-screen bg-brand-light py-12 px-4 sm:px-6 pt-8 md:pt-12'} text-brand relative overflow-hidden font-sans`}>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-[1600px] mx-auto relative z-10">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 md:mb-12">
           <div>
@@ -153,7 +153,7 @@ export default function Wishlist() {
           /* Wishlist Grid */
           <m.div
             layout
-            className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
           >
             <AnimatePresence mode="popLayout">
               {items.map((item, index) => {
@@ -210,7 +210,7 @@ export default function Wishlist() {
                               {item.categoryName}
                             </span>
                           )}
-                          <div className="flex items-center gap-1.5 text-[10px] text-brand/50 font-semibold uppercase">
+                          <div className="flex items-center gap-1.5 text-[10px] text-brand/50 font-semibold capitalize">
                             {item.size && <span>{item.size}</span>}
                             {item.color && item.size && <span>•</span>}
                             {item.color && <span>{item.color}</span>}
@@ -218,7 +218,7 @@ export default function Wishlist() {
                         </div>
                         <Link
                           href={`/product/${item.productId}`}
-                          className="text-sm md:text-base font-bold text-brand hover:text-brand/70 transition-colors line-clamp-2 block leading-tight min-h-[2.5rem]"
+                          className="text-sm md:text-base font-bold text-brand hover:text-brand/70 transition-colors line-clamp-2 block leading-tight h-10"
                         >
                           {item.title}
                         </Link>

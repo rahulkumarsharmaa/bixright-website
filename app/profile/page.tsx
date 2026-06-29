@@ -22,6 +22,7 @@ import Wishlist from "../wishlist/page";
 import OrdersPage from "../orders/page";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useSite } from "../context/siteSetting";
 
 // --- TYPES ---
 type Address = {
@@ -74,6 +75,7 @@ const itemVariants = {
 
 function ProfileContent() {
   const router = useRouter();
+  const { siteData } = useSite();
   const searchParams = useSearchParams();
   const tabValue = searchParams.get("tab");
   const [selectedNav, setSelectedNav] = useState(tabValue ?? "profile");
@@ -245,10 +247,10 @@ function ProfileContent() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-brand-light">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-500 text-sm font-medium">Loading profile...</p>
+          <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
+          <p className="text-brand/60 text-sm font-medium">Loading profile...</p>
         </div>
       </div>
     );
@@ -261,7 +263,11 @@ function ProfileContent() {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-20 pt-8 px-4 font-sans text-gray-900">
+    <div className="min-h-screen bg-brand-light/50 pb-20 pt-8 px-4 font-sans text-gray-900">
+      <title>{siteData.siteName ? `${siteData.siteName} | My Profile` : "Bixright | My Profile"}</title>
+      <meta name="description" content={`View and manage your profile details, orders, and wishlist on ${siteData.siteName || "Bixright"}.`} />
+      <meta property="og:title" content={siteData.siteName ? `${siteData.siteName} | My Profile` : "Bixright | My Profile"} />
+      <meta property="og:description" content={`View and manage your profile details, orders, and wishlist on ${siteData.siteName || "Bixright"}.`} />
       <div className="max-w-7xl mx-auto">
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -269,8 +275,8 @@ function ProfileContent() {
           {/* SIDEBAR (Desktop) */}
           <aside className="hidden lg:block lg:col-span-3 space-y-6">
             {/* Profile Brief */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border border-gray-200">
+            <div className="bg-brand-light rounded-2xl md:rounded-4xl p-6 border border-brand/10 shadow-sm flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-brand-light border border-brand/20">
                 <Image
                   src={AVATAR_SRC}
                   alt="avatar"
@@ -286,7 +292,7 @@ function ProfileContent() {
             </div>
 
             {/* Nav Menu */}
-            <nav className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-1">
+            <nav className="bg-brand-light rounded-2xl md:rounded-4xl p-4 border border-brand/10 shadow-sm space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = selectedNav === item.id;
@@ -294,10 +300,10 @@ function ProfileContent() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedNav(item.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-4xl transition-all duration-200 cursor-pointer
                                 ${isActive
-                        ? "bg-black text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                        ? "bg-brand text-white shadow-md shadow-brand/20"
+                        : "text-gray-600 hover:bg-brand/5 hover:text-brand"
                       }`}
                   >
                     <Icon size={18} className={isActive ? "text-white" : "text-gray-400"} />
@@ -306,7 +312,7 @@ function ProfileContent() {
                 )
               })}
 
-              <div className="pt-4 mt-2 border-t border-gray-100">
+              <div className="pt-4 mt-2 border-t border-brand/10">
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
@@ -324,7 +330,7 @@ function ProfileContent() {
             {/* Mobile Header trigger */}
             <div className="lg:hidden mb-6 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center font-bold">
                   {profile.firstName[0]}
                 </div>
                 <div>
@@ -333,7 +339,7 @@ function ProfileContent() {
               </div>
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 border border-gray-200 rounded-lg bg-white shadow-sm cursor-pointer"
+                className="p-2 border border-brand/10 rounded-lg bg-white shadow-sm cursor-pointer"
               >
                 <LuSquareSplitHorizontal size={20} />
               </button>
@@ -350,7 +356,7 @@ function ProfileContent() {
                 {selectedNav === "profile" && (
                   <div className="space-y-6">
                     {/* Profile Header Card */}
-                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden">
+                    <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm p-6 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-24 overflow-hidden">
                         <Image
                           src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1600&auto=format&fit=crop"
@@ -385,7 +391,7 @@ function ProfileContent() {
                                 />
                                 <button
                                   onClick={triggerFileInput}
-                                  className="absolute bottom-0 right-0 p-1.5 bg-black text-white rounded-full border-2 border-white shadow-sm hover:scale-105 transition-transform cursor-pointer"
+                                  className="absolute bottom-0 right-0 p-1.5 bg-brand text-white rounded-full border-2 border-white shadow-sm hover:scale-105 transition-transform cursor-pointer"
                                 >
                                   <Camera size={14} />
                                 </button>
@@ -406,14 +412,14 @@ function ProfileContent() {
                                   setForm(profile);
                                   setEditMode(false);
                                 }}
-                                className="flex-1 md:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                                className="flex-1 md:flex-none px-4 py-2 text-sm font-medium text-gray-600 bg-brand-light border border-gray-300 rounded-4xl hover:bg-gray-50 transition-colors cursor-pointer"
                               >
                                 Cancel
                               </button>
                               <button
                                 onClick={saveProfile}
                                 disabled={saving}
-                                className="flex-1 md:flex-none px-6 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 transition-colors shadow-sm cursor-pointer"
+                                className="flex-1 md:flex-none px-6 py-2 text-sm font-medium text-white bg-brand rounded-4xl hover:bg-brand/90 transition-colors shadow-sm cursor-pointer"
                               >
                                 {saving ? "Saving..." : "Save Changes"}
                               </button>
@@ -421,7 +427,7 @@ function ProfileContent() {
                           ) : (
                             <button
                               onClick={() => setEditMode(true)}
-                              className="flex-1 md:flex-none px-6 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 transition-colors shadow-sm cursor-pointer"
+                              className="flex-1 md:flex-none px-6 py-2 text-sm font-medium text-white bg-brand rounded-4xl hover:bg-brand/90 transition-colors shadow-sm cursor-pointer"
                             >
                               Edit Profile
                             </button>
@@ -431,7 +437,7 @@ function ProfileContent() {
                     </div>
 
                     {/* Personal Information */}
-                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8">
+                    <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm p-6 md:p-8">
                       <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <User size={20} className="text-gray-400" />
                         Personal Information
@@ -484,7 +490,7 @@ function ProfileContent() {
                     {/* Addresses Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Billing Address */}
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                      <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                           <MapPin size={20} className="text-gray-400" />
                           Billing Address
@@ -514,7 +520,7 @@ function ProfileContent() {
                       </div>
 
                       {/* Shipping Address */}
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                      <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                           <MapPin size={20} className="text-gray-400" />
                           Shipping Address
@@ -559,16 +565,16 @@ function ProfileContent() {
                 )}
 
                 {selectedNav === "orders" && (
-                  <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden min-h-[600px]">
+                  <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm overflow-hidden min-h-[600px]">
                     <div className="p-0">
-                      <OrdersPage setSidebarOpen={setSidebarOpen} />
+                      <OrdersPage setSidebarOpen={setSidebarOpen} isEmbedded={true} />
                     </div>
                   </div>
                 )}
 
                 {selectedNav === "wishlist" && (
-                  <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 min-h-[600px]">
-                    <Wishlist />
+                  <div className="bg-brand-light rounded-2xl md:rounded-4xl border border-brand/10 shadow-sm p-6 min-h-[600px]">
+                    <Wishlist isEmbedded={true} />
                   </div>
                 )}
               </m.div>
@@ -628,8 +634,8 @@ function ProfileContent() {
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all cursor-pointer
                                         ${selectedNav === item.id
-                          ? "bg-black text-white"
-                          : "text-gray-600 hover:bg-gray-50"
+                          ? "bg-brand text-white"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-brand"
                         }`}
                     >
                       <item.icon size={20} />
@@ -673,7 +679,7 @@ function InputField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-gray-500 capitalize tracking-wide mb-1">{label}</label>
       <div className={`relative transition-all duration-200 ${editMode ? "" : "opacity-80"}`}>
         {Icon && (
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -685,11 +691,11 @@ function InputField({
             type={type}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-black focus:border-transparent block p-3 transition-shadow ${Icon ? 'pl-10' : ''}`}
+            className={`w-full bg-brand/5 border border-brand/25 text-gray-900 text-sm rounded-4xl focus:ring-2 focus:ring-brand focus:border-transparent block p-3 transition-shadow ${Icon ? 'pl-10' : ''}`}
             placeholder={`Enter ${label}`}
           />
         ) : (
-          <div className={`w-full bg-gray-50 border border-gray-100 text-gray-900 text-sm rounded-xl block p-3 font-medium ${Icon ? 'pl-10' : ''}`}>
+          <div className={`w-full bg-brand-light/10 border border-brand/5 text-gray-900 text-sm rounded-4xl block p-3 font-medium ${Icon ? 'pl-10' : ''}`}>
             {value || "-"}
           </div>
         )}
@@ -713,19 +719,19 @@ function SelectField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-gray-500 capitalize tracking-wide mb-1">{label}</label>
       <div className="relative">
         {editMode ? (
           <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-black focus:border-transparent block p-3 transition-shadow appearance-none"
+            className="w-full bg-brand/5 border border-brand/25 text-gray-900 text-sm rounded-4xl focus:ring-2 focus:ring-brand focus:border-transparent block p-3 transition-shadow appearance-none"
           >
             <option value="">Select {label}</option>
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
           </select>
         ) : (
-          <div className="w-full bg-gray-50 border border-gray-100 text-gray-900 text-sm rounded-xl block p-3 font-medium">
+          <div className="w-full bg-brand-light/10 border border-brand/5 text-gray-900 text-sm rounded-xl block p-3 font-medium">
             {value || "-"}
           </div>
         )}

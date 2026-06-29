@@ -22,6 +22,7 @@ import FilterProduct from "@/app/components/FilterProduct";
 import { toast } from "sonner";
 import { LuSquareSplitHorizontal } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { useSite } from "@/app/context/siteSetting";
 
 // --- ANIMATION VARIANTS ---
 const containerVariants = {
@@ -38,6 +39,7 @@ const containerVariants = {
 // --- TYPES ---
 interface Props {
   setSidebarOpen?: (value: boolean) => void;
+  isEmbedded?: boolean;
 }
 
 interface CancelPayload {
@@ -87,7 +89,7 @@ const OrderTracker = ({ status }: { status: string }) => {
           initial={{ width: 0 }}
           animate={{ width: `${(activeIndex / (steps.length - 1)) * 100}%` }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute top-1/2 left-4 h-1 bg-black -translate-y-1/2 rounded-full z-0 origin-left"
+          className="absolute top-1/2 left-4 h-1 bg-brand -translate-y-1/2 rounded-full z-0 origin-left"
           style={{ maxWidth: 'calc(100% - 2rem)' }}
         />
 
@@ -103,18 +105,18 @@ const OrderTracker = ({ status }: { status: string }) => {
                   initial={false}
                   animate={{
                     scale: isCurrent ? 1.2 : 1,
-                    backgroundColor: isCompleted ? "#000000" : "#ffffff",
-                    borderColor: isCompleted ? "#000000" : "#e5e7eb",
+                    backgroundColor: isCompleted ? "var(--brand-primary)" : "#ffffff",
+                    borderColor: isCompleted ? "var(--brand-primary)" : "#e5e7eb",
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className={`w-10 h-10 rounded-full border-4 flex items-center justify-center relative z-10
-                    ${isCompleted ? 'bg-black text-white shadow-lg shadow-black/20' : 'bg-white text-gray-300 border-gray-200'}
+                    ${isCompleted ? 'bg-brand text-white shadow-lg shadow-brand/20' : 'bg-white text-gray-300 border-gray-200'}
                   `}
                 >
                   {isCurrent && (
                     <m.div
                       layoutId="pulse"
-                      className="absolute inset-0 rounded-full border-4 border-black/10 -z-10"
+                      className="absolute inset-0 rounded-full border-4 border-brand/10 -z-10"
                       animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
                     />
@@ -122,7 +124,7 @@ const OrderTracker = ({ status }: { status: string }) => {
 
                   {idx < activeIndex ? (
                     <m.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                      <CheckCircle size={16} fill="white" className="text-black bg-white rounded-full" />
+                      <CheckCircle size={16} fill="white" className="text-brand bg-white rounded-full" />
                     </m.div>
                   ) : (
                     <Icon size={16} strokeWidth={2.5} />
@@ -130,7 +132,7 @@ const OrderTracker = ({ status }: { status: string }) => {
                 </m.div>
 
                 <div className="absolute top-12 left-1/2 -translate-x-1/2 min-w-[80px]">
-                  <p className={`text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isCompleted ? 'text-black' : 'text-gray-400'}`}>
+                  <p className={`text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isCompleted ? 'text-brand' : 'text-gray-400'}`}>
                     {step.label}
                   </p>
                   {isCurrent && (
@@ -158,7 +160,7 @@ const OrderTracker = ({ status }: { status: string }) => {
           initial={{ height: 0 }}
           animate={{ height: `${(activeIndex / (steps.length - 1)) * 100}%` }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute left-[50px] top-2 w-1 bg-black rounded-full z-0 origin-top"
+          className="absolute left-[50px] top-2 w-1 bg-brand rounded-full z-0 origin-top"
           style={{ maxHeight: 'calc(100% - 1rem)' }}
         />
 
@@ -173,17 +175,17 @@ const OrderTracker = ({ status }: { status: string }) => {
                 initial={false}
                 animate={{
                   scale: isCurrent ? 1.15 : 1,
-                  backgroundColor: isCompleted ? "#000000" : "#ffffff",
-                  borderColor: isCompleted ? "#000000" : "#e5e7eb",
+                  backgroundColor: isCompleted ? "var(--brand-primary)" : "#ffffff",
+                  borderColor: isCompleted ? "var(--brand-primary)" : "#e5e7eb",
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className={`w-9 h-9 rounded-full border-4 flex items-center justify-center relative flex-shrink-0
-                  ${isCompleted ? 'bg-black text-white shadow-md shadow-black/10' : 'bg-white text-gray-300 border-gray-200'}
+                  ${isCompleted ? 'bg-brand text-white shadow-md shadow-brand/10' : 'bg-white text-gray-300 border-gray-200'}
                 `}
               >
                 {isCurrent && (
                   <m.div
-                    className="absolute inset-0 rounded-full border-4 border-black/10 -z-10"
+                    className="absolute inset-0 rounded-full border-4 border-brand/10 -z-10"
                     animate={{ scale: [1, 1.4], opacity: [0.5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
                   />
@@ -191,7 +193,7 @@ const OrderTracker = ({ status }: { status: string }) => {
 
                 {idx < activeIndex ? (
                   <m.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                    <CheckCircle size={14} fill="white" className="text-black bg-white rounded-full" />
+                    <CheckCircle size={14} fill="white" className="text-brand bg-white rounded-full" />
                   </m.div>
                 ) : (
                   <Icon size={14} strokeWidth={2.5} />
@@ -199,7 +201,7 @@ const OrderTracker = ({ status }: { status: string }) => {
               </m.div>
 
               <div>
-                <p className={`text-xs font-bold uppercase tracking-wider ${isCompleted ? 'text-black' : 'text-gray-400'}`}>
+                <p className={`text-xs font-bold uppercase tracking-wider ${isCompleted ? 'text-brand' : 'text-gray-400'}`}>
                   {step.label}
                 </p>
                 {isCurrent && (
@@ -219,17 +221,17 @@ const OrderTracker = ({ status }: { status: string }) => {
 // 2. STATUS BADGE
 const ModernStatusBadge = ({ status }: { status: string }) => {
   const config = {
-    pending: { bg: "bg-yellow-100", text: "text-yellow-800", label: "Pending" },
-    confirmed: { bg: "bg-gray-100", text: "text-gray-800", label: "Confirmed" },
-    shipped: { bg: "bg-purple-100", text: "text-purple-800", label: "Shipped" },
-    delivered: { bg: "bg-green-100", text: "text-green-800", label: "Delivered" },
-    cancelled: { bg: "bg-red-100", text: "text-red-800", label: "Cancelled" },
-    returned: { bg: "bg-gray-100", text: "text-gray-800", label: "Returned" },
+    pending: { bg: "bg-amber-50/80 border-amber-200/50", text: "text-amber-700", label: "Pending" },
+    confirmed: { bg: "bg-brand-light/70 border-brand/20", text: "text-brand", label: "Confirmed" },
+    shipped: { bg: "bg-purple-50/80 border-purple-200/50", text: "text-purple-700", label: "Shipped" },
+    delivered: { bg: "bg-emerald-50/80 border-emerald-200/50", text: "text-emerald-700", label: "Delivered" },
+    cancelled: { bg: "bg-rose-50/80 border-rose-200/50", text: "text-rose-700", label: "Cancelled" },
+    returned: { bg: "bg-gray-50/80 border-gray-200/50", text: "text-gray-600", label: "Returned" },
   };
   const c = config[status as keyof typeof config] || config.pending;
 
   return (
-    <span className={`px-2.5 py-0.5 rounded-4xl text-[10px] font-bold uppercase tracking-wide border border-transparent ${c.bg} ${c.text}`}>
+    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${c.bg} ${c.text}`}>
       {c.label}
     </span>
   );
@@ -237,8 +239,9 @@ const ModernStatusBadge = ({ status }: { status: string }) => {
 
 
 // --- MAIN PAGE COMPONENT ---
-export default function OrdersPage({ setSidebarOpen }: Props) {
+export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props) {
   const router = useRouter();
+  const { siteData } = useSite();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [openOrder, setOpenOrder] = useState<string | null>(null);
@@ -246,7 +249,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState("");
-  
+
 
   const formatDate = (value: string) => {
     return new Date(value).toLocaleDateString("en-IN", {
@@ -350,15 +353,25 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
       // Company Details (Left)
       doc.setFontSize(18);
       doc.setFont("helvetica", "bold");
-      doc.text("Bixright Electronics", margin, 20);
+      doc.text(siteData?.siteName || "Bixright Electronics", margin, 20);
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(secondaryColor);
-      doc.text("123, Tech Plaza, Silicon Valley", margin, 26);
-      doc.text("India - 400001", margin, 31);
-      doc.text("Email: support@Bixright.com", margin, 36);
-      doc.text("GSTIN: 27ABCDE1234F1Z5", margin, 41);
+      const rawAddress = siteData?.address || "123, Tech Plaza, Silicon Valley\nIndia - 400001";
+      const addressLines = rawAddress.split('\n').map(line => line.trim()).filter(Boolean);
+      let currentY = 26;
+      addressLines.forEach((line) => {
+        doc.text(line, margin, currentY);
+        currentY += 5;
+      });
+      doc.text(`Email: ${siteData?.email || "support@Bixright.com"}`, margin, currentY);
+      currentY += 5;
+      if (siteData?.phone) {
+        doc.text(`Phone: +91 ${siteData.phone}`, margin, currentY);
+        currentY += 5;
+      }
+      doc.text("GSTIN: 27ABCDE1234F1Z5", margin, currentY);
 
       // Invoice Label (Right)
       doc.setFontSize(16);
@@ -564,7 +577,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
   };
 
   return (
-    <main className="relative min-h-screen bg-transparent px-4 sm:px-6 py-6 font-sans">
+    <main className={`relative ${isEmbedded ? '' : 'min-h-screen'} bg-transparent px-4 sm:px-6 py-6 font-sans`}>
       <div className="max-w-5xl mx-auto md:px-6">
 
         {/* HEADER SECTION */}
@@ -575,14 +588,14 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
               <div className="lg:hidden">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white border border-gray-200 shadow-sm text-gray-700"
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-light border border-gray-200 shadow-sm text-gray-700"
                 >
                   <LuSquareSplitHorizontal size={20} />
                 </button>
               </div>
             )}
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Your Orders</h1>
+              <h1 className=" text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Your Orders</h1>
               <p className="hidden sm:block text-sm text-gray-500">Track, manage and return your orders</p>
             </div>
           </div>
@@ -597,16 +610,16 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-2xl h-40 w-full animate-pulse border border-gray-100 shadow-sm" />
+              <div key={i} className="bg-white rounded-2xl md:rounded-4xl h-40 w-full animate-pulse border border-gray-100 shadow-sm" />
             ))}
           </div>
         ) : orders.length === 0 ? (
           <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center"
+            className="flex flex-col items-center justify-center bg-brand-light rounded-2xl md:rounded-4xl border border-dashed border-brand/20 p-12 text-center"
           >
-            <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 text-gray-400">
+            <div className="w-16 h-16 bg-brand-light/30 rounded-2xl md:rounded-4xl flex items-center justify-center mb-4 text-brand/40">
               <Package size={32} />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">No orders found</h3>
@@ -630,18 +643,18 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                       hidden: { opacity: 0, y: 10 },
                       show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
                     }}
-                    className={`bg-white rounded-2xl border overflow-hidden ${isOpen ? ' shadow-sm' : 'border-gray-200 shadow-sm hover:border-gray-300'}`}
+                    className={`bg-brand-light rounded-2xl md:rounded-4xl border overflow-hidden ${isOpen ? ' shadow-sm' : 'border-brand/10 shadow-sm hover:border-brand/30'}`}
                   >
                     {/* CARD HEADER */}
                     <div
                       onClick={() => setOpenOrder(isOpen ? null : order._id)}
-                      className="p-4 sm:p-5 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative z-20 bg-white"
+                      className="p-4 sm:p-5 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative z-20 bg-brand-light"
                     >
                       {/* Order Info & Images Preview */}
                       <div className="md:col-span-5 space-y-3">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Order ID</span>
-                          <span className="text-xs font-mono text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">{order.orderId}</span>
+                          <span className="text-xs font-mono text-gray-600 bg-brand/10 px-2 py-0.5 rounded-full">{order.orderId}</span>
                         </div>
 
                         {/* Collapsed Images Preview */}
@@ -668,7 +681,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                               </m.div>
                             ))}
                             {order.products.length > 4 && (
-                              <div className="w-10 h-10 rounded-xl border-2 border-white bg-gray-50 flex items-center justify-center text-[10px] font-bold text-gray-500 z-0">
+                              <div className="w-10 h-10 rounded-xl border-2 border-white bg-gray-500 flex items-center justify-center text-[10px] font-bold text-gray-500 z-0">
                                 +{order.products.length - 4}
                               </div>
                             )}
@@ -691,9 +704,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
 
                       {/* Status Badge */}
                       <div className="md:col-span-3 flex md:justify-end items-center gap-3">
-                        {!["shipped", "delivered", "cancelled", "returned"].includes((order.orderStatus || "").toLowerCase()) && (
-                          <ModernStatusBadge status={order.orderStatus} />
-                        )}
+                        <ModernStatusBadge status={order.orderStatus} />
                       </div>
 
                       {/* Toggle Icon */}
@@ -713,13 +724,13 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ type: "spring", stiffness: 200, damping: 20 }}
                         >
-                          <div className="px-6 pb-6 pt-2 border-t border-gray-100">
+                          <div className="px-6 pb-6 pt-2 border-t border-brand/10">
 
                             {/* 1. Tracker */}
                             <OrderTracker status={order.orderStatus} />
 
                             {/* 2. Grid Info */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 bg-brand-light/20 p-4 rounded-3xl border border-brand/10">
                               <div>
                                 <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center gap-2">
                                   <MapPin size={14} /> Delivery Address
@@ -762,7 +773,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                                       router.push(`/product/${slug}`);
                                     }
                                   }}
-                                  className="group flex items-start gap-4 p-3 bg-white rounded-2xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all cursor-pointer"
+                                  className="group flex items-start gap-4 p-3 bg-brand-light rounded-3xl border border-brand/10 hover:border-brand/30 hover:bg-brand-light/10 transition-all cursor-pointer"
                                 >
                                   <m.div
                                     layoutId={`img-${order._id}-${item.variantId}`}
@@ -799,7 +810,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                                     e.stopPropagation();
                                     handleDownloadInvoice(order);
                                   }}
-                                  className="w-full sm:w-auto px-5 py-2.5 bg-black text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-sm"
+                                  className="w-full sm:w-auto px-5 py-2.5 bg-brand text-white rounded-full text-sm font-medium hover:bg-brand/90 transition-all flex items-center justify-center gap-2 shadow-sm"
                                 >
                                   <Package size={16} />
                                   Download Invoice
@@ -869,7 +880,7 @@ export default function OrdersPage({ setSidebarOpen }: Props) {
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="e.g., I changed my mind, found a better price..."
-                    className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-black focus:border-black outline-none min-h-[100px] resize-none"
+                    className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none min-h-[100px] resize-none"
                   />
                 </div>
 
