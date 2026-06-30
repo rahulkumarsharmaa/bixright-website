@@ -81,10 +81,10 @@ const SectionShopButtons = () => {
               href={`/category/${item._id}?categoryName=${encodeURIComponent(item.title)}`}
               className="block h-full w-full"
             >
-              <div className="relative h-[180px] sm:h-[280px] md:h-[400px] w-full rounded-2xl md:rounded-4xl overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100 bg-gray-50">
+              <div className="relative h-[180px] sm:h-[280px] md:h-[400px] w-full rounded-2xl md:rounded-4xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-brand/10 hover:border-brand/30 bg-brand/3">
 
                 {/* Image Scale Effect */}
-                <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+                <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-103">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`}
                     alt={item.title}
@@ -94,17 +94,14 @@ const SectionShopButtons = () => {
                   />
                 </div>
 
-                {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                {/* Brand-Tinted Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-brand/90 via-black/20 to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300" />
 
                 {/* Content */}
-                <div className="absolute bottom-0 inset-x-0 px-4 py-3 md:px-6 md:py-4 flex flex-col items-start justify-end h-full">
-
-                  {/* <h3 className="text-2xl font-bold text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">{item.title}</h3> */}
-
+                <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 flex flex-col items-start justify-end h-full">
                   <div className="w-full flex items-center justify-between text-white gap-2">
-                    <span className="text-sm sm:text-xl md:text-2xl font-bold capitalize text-white leading-tight group-hover:translate-x-1 transition-transform duration-300 line-clamp-1">{item.title}</span>
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white text-black flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-transform duration-500 shrink-0">
+                    <span className="text-sm sm:text-xl md:text-2xl font-extrabold capitalize text-white tracking-tight leading-tight group-hover:translate-x-1 transition-transform duration-300 line-clamp-1">{item.title}</span>
+                    <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white text-brand flex items-center justify-center -rotate-45 group-hover:rotate-0 group-hover:bg-brand group-hover:text-brand-light transition-all duration-500 shrink-0 shadow-sm">
                       <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>

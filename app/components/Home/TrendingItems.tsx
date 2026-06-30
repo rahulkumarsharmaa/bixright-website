@@ -88,36 +88,32 @@ export default function TrendingItems() {
             >
               <Link
                 href={`/product/${products[0]._id}`}
-                className="flex-1 bg-brand/3 rounded-2xl lg:rounded-4xl border border-brand/10 overflow-hidden relative transition-colors duration-300 hover:bg-brand/3 hover:text-brand flex flex-col justify-between"
+                className="flex-1 bg-brand/3 hover:bg-brand/5 border border-brand/10 hover:border-brand/20 hover:shadow-md rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col h-full"
               >
-                {/* Background Gradient Blob */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                <div className="relative aspect-square w-full bg-white overflow-hidden flex-shrink-0">
+                <div className="relative aspect-square w-full bg-white rounded-xl sm:rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${products[0].images.find(img => img.isCover)?.imageUrl || products[0].images[0]?.imageUrl}`}
                     alt={products[0].title}
                     fill
                     className="object-contain group-hover:scale-102 transition-transform duration-700 ease-out"
                   />
-                  <div className="absolute top-4 left-4 bg-brand text-brand-light text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-full z-10">
+                  <div className="absolute top-2.5 left-2.5 bg-brand text-brand-light text-[9px] md:text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 shadow-sm">
                     #1 Best Seller
                   </div>
                 </div>
 
-                <div className="p-5 flex flex-col gap-3.5 border-t border-brand/10">
-                  <h3 className="text-sm sm:text-base md:text-2xl font-bold text-brand/90 line-clamp-1 md:line-clamp-2 group-hover:text-brand transition-colors">{products[0].title}</h3>
-                  <div className="flex items-center justify-between">
+                <div className="flex-1 flex flex-col px-0.5 pt-3.5">
+                  <h3 className="text-sm sm:text-base md:text-xl font-bold text-brand/90 line-clamp-2 mb-2 group-hover:text-brand transition-colors capitalize">{products[0].title}</h3>
+                  <div className="mt-auto pt-3 border-t border-brand/5 flex items-center justify-between">
                     <div className="flex items-baseline gap-1.5 md:gap-2">
-                      <span className="text-base sm:text-lg md:text-3xl font-black text-brand">₹{products[0].discountedPrice}</span>
+                      <span className="text-base sm:text-lg md:text-2xl font-extrabold text-brand">₹{products[0].discountedPrice.toFixed(2)}</span>
                       {products[0].discountedPrice < products[0].basePrice && (
-                        <span className="text-[10px] sm:text-xs md:text-sm text-brand/50 line-through decoration-red-500/50">₹{products[0].basePrice}</span>
+                        <span className="text-[10px] sm:text-xs md:text-sm text-brand/40 line-through">₹{products[0].basePrice.toFixed(2)}</span>
                       )}
                     </div>
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
-                      <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
+                      <ArrowRight size={14} className="sm:w-4 sm:h-4" />
                     </div>
-                    
                   </div>
                 </div>
               </Link>
@@ -138,8 +134,11 @@ export default function TrendingItems() {
                   transition={{ delay: 0.2 + (i * 0.1) }}
                   className="group"
                 >
-                  <Link href={`/product/${item._id}`} className="h-full bg-brand/3 rounded-2xl lg:rounded-4xl border border-brand/10 overflow-hidden relative transition-colors duration-300 hover:bg-brand/3 hover:text-brand flex flex-col justify-between">
-                    <div className="relative aspect-square bg-white overflow-hidden flex-shrink-0">
+                  <Link
+                    href={`/product/${item._id}`}
+                    className="group bg-brand/3 hover:bg-brand/5 border border-brand/10 hover:border-brand/20 hover:shadow-md rounded-2xl sm:rounded-3xl p-3 transition-all duration-300 flex flex-col h-full"
+                  >
+                    <div className="relative aspect-square bg-white rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center">
                       <Image
                         src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.images.find(img => img.isCover)?.imageUrl || item.images[0]?.imageUrl}`}
                         alt={item.title}
@@ -147,14 +146,14 @@ export default function TrendingItems() {
                         className="object-contain group-hover:scale-102 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-4 flex flex-col flex-grow justify-between gap-1.5">
+                    <div className="flex-1 flex flex-col px-0.5 pt-3">
                       <div>
-                        <h4 className="font-bold text-brand/90 text-xs sm:text-base line-clamp-1 mb-0.5 group-hover:text-brand transition-colors">{item.title}</h4>
-                        <p className="text-[10px] sm:text-sm text-brand/90 line-clamp-1">{item.subCategoryName}</p>
+                        <h4 className="font-bold text-brand/90 text-xs sm:text-sm md:text-base line-clamp-1 mb-0.5 group-hover:text-brand transition-colors capitalize">{item.title}</h4>
+                        <p className="text-[10px] text-brand/50 font-medium uppercase tracking-wider mb-2">{item.subCategoryName}</p>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs sm:text-lg font-bold text-brand">₹{item.discountedPrice}</span>
-                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
+                      <div className="mt-auto pt-2.5 border-t border-brand/5 flex items-center justify-between">
+                        <span className="text-sm sm:text-base font-extrabold text-brand">₹{item.discountedPrice.toFixed(2)}</span>
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:text-brand-light transition-all">
                           <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
                         </div>
                       </div>
@@ -170,20 +169,20 @@ export default function TrendingItems() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="lg:flex-1 bg-black rounded-2xl lg:rounded-4xl overflow-hidden relative group cursor-pointer"
+                className="lg:flex-1 bg-black border border-gray-850 hover:shadow-lg rounded-2xl lg:rounded-3xl overflow-hidden relative group cursor-pointer animate-none"
               >
                 <Link href={`/product/${products[3]._id}`} className="flex flex-col sm:flex-row h-full w-full">
-                  <div className="sm:w-1/2 p-5 sm:py-5 sm:px-8 flex flex-col justify-center relative z-10">
-                    <span className="text-brand-light font-bold text-xs tracking-wider mb-1">Editor's Choice</span>
-                    <h3 className="text-sm sm:text-base md:text-2xl font-bold text-brand-light mb-2 sm:mb-3 leading-tight group-hover:text-brand-light transition-colors line-clamp-2">{products[3].title}</h3>
-                    <div className="flex items-baseline gap-2 mb-3 sm:mb-4">
-                      <span className="text-lg sm:text-xl md:text-3xl font-bold text-brand-light">₹{products[3].discountedPrice}</span>
+                  <div className="sm:w-1/2 p-5 sm:py-6 sm:px-8 flex flex-col justify-center relative z-10">
+                    <span className="text-brand-light font-bold text-xs tracking-wider mb-1 uppercase opacity-60">Editor's Choice</span>
+                    <h3 className="text-sm sm:text-base md:text-xl font-bold text-brand-light mb-2 leading-tight group-hover:text-brand transition-colors line-clamp-2">{products[3].title}</h3>
+                    <div className="flex items-baseline gap-2 mb-3">
+                      <span className="text-base sm:text-lg md:text-2xl font-extrabold text-brand-light">₹{products[3].discountedPrice.toFixed(2)}</span>
                       {products[3].discount > 0 && (
                         <span className="px-2 py-0.5 bg-green-600 text-brand-light text-[9px] md:text-xs font-bold rounded-full">- {products[3].discount}%</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 text-brand-light/90 text-xs md:text-sm font-medium group-hover:text-brand-light transition-colors">
-                      Shop Now <ArrowRight size={14} className="md:w-4 md:h-4" />
+                    <div className="flex items-center gap-1.5 text-brand-light/90 text-xs md:text-sm font-medium group-hover:text-brand transition-colors">
+                      Shop Now <ArrowRight size={14} className="md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                   <div className="sm:w-1/2 relative bg-gray-900/50 aspect-[16/10] overflow-hidden flex-shrink-0">
@@ -193,7 +192,6 @@ export default function TrendingItems() {
                       fill
                       className="object-cover object-center mix-blend-lighten opacity-90 group-hover:scale-102 group-hover:opacity-100 transition-all duration-500"
                     />
-                    {/* Background Burst */}
                     <div className="absolute inset-0 bg-gradient-to-l from-purple-900/40 to-transparent" />
                   </div>
                 </Link>

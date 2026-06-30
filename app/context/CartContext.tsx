@@ -68,11 +68,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [token]);
 
-  // useEffect(() => {
-  //   startTransition(() => {
-  //     fetchCart();
-  //   });
-  // }, [fetchCart]);
+  useEffect(() => {
+    startTransition(() => {
+      fetchCart();
+    });
+  }, [fetchCart]);
 
   // ----------------- Sync guest cart to localStorage -----------------
   useEffect(() => {

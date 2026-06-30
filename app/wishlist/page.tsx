@@ -102,12 +102,12 @@ export default function Wishlist({ isEmbedded = false }: { isEmbedded?: boolean 
             <p className="text-sm text-brand/60 font-semibold mt-1">Keep track of products you love and purchase them directly.</p>
           </div>
 
-          <div className="flex items-center gap-3 self-start sm:self-center">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto self-start sm:self-center">
             {items.length > 0 && (
               <button
                 onClick={handleMoveAllToCart}
                 disabled={movingAll}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-brand hover:bg-brand/90 text-brand-light font-bold text-sm rounded-full disabled:bg-brand/35 transition-all shadow-sm active:scale-95 cursor-pointer"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-brand hover:bg-brand/90 text-brand-light font-bold text-sm rounded-full disabled:bg-brand/35 transition-all shadow-sm active:scale-95 cursor-pointer w-full sm:w-auto whitespace-nowrap"
               >
                 {movingAll ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -120,7 +120,7 @@ export default function Wishlist({ isEmbedded = false }: { isEmbedded?: boolean 
 
             <button
               onClick={() => router.push('/')}
-              className="flex items-center justify-center gap-1.5 px-5 py-2.5 bg-brand/5 hover:bg-brand/10 border border-brand/20 text-brand font-semibold text-sm rounded-full transition-all active:scale-95 cursor-pointer"
+              className="flex items-center justify-center gap-1.5 px-5 py-2.5 bg-brand/5 hover:bg-brand/10 border border-brand/20 text-brand font-semibold text-sm rounded-full transition-all active:scale-95 cursor-pointer w-full sm:w-auto whitespace-nowrap"
             >
               Continue Shopping &rarr;
             </button>
@@ -153,7 +153,7 @@ export default function Wishlist({ isEmbedded = false }: { isEmbedded?: boolean 
           /* Wishlist Grid */
           <m.div
             layout
-            className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
           >
             <AnimatePresence mode="popLayout">
               {items.map((item, index) => {
@@ -233,11 +233,11 @@ export default function Wishlist({ isEmbedded = false }: { isEmbedded?: boolean 
                           <span className="text-xs font-semibold text-brand/50">Price</span>
                           <div className="flex items-baseline gap-2">
                             <span className="text-base md:text-lg font-black text-brand">
-                              ₹{(item.discountedPrice !== undefined ? item.discountedPrice : (item.price ?? 0)).toLocaleString()}
+                              ₹{(item.discountedPrice !== undefined ? item.discountedPrice : (item.price ?? 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                             {item.basePrice && item.discountedPrice && item.discountedPrice < item.basePrice && (
                               <span className="text-xs text-brand/40 line-through">
-                                ₹{item.basePrice.toLocaleString()}
+                                ₹{item.basePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                             )}
                           </div>

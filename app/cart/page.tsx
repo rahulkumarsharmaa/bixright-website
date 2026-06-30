@@ -84,7 +84,7 @@ export default function CartPage() {
               <div className="space-y-6">
                 <AnimatePresence mode="popLayout">
                   {cart.map((item, index) => {
-                    const img = `${process.env.NEXT_PUBLIC_IMAGE_URL}/${item.images?.[0]?.imageUrl}`
+                    const img = `${process.env.NEXT_PUBLIC_IMAGE_URL}${item.images?.[0]?.imageUrl}`
                     const totalPrice = (item.discountedPrice * item.quantity).toFixed(2);
 
                     return (
@@ -99,8 +99,8 @@ export default function CartPage() {
                       >
                         {/* Image */}
                         <div
-                          className="relative h-32 w-full sm:w-32 sm:h-32 flex-shrink-0 overflow-hidden rounded-xl bg-white border border-brand/10 cursor-pointer flex items-center justify-center"
-                          onClick={() => router.push(`/product/${item._id}`)}
+                          className="relative h-32 w-full sm:w-32 sm:h-32 flex-shrink-0 overflow-hidden rounded-3xl bg-white border border-brand/10 cursor-pointer flex items-center justify-center"
+                          onClick={() => router.push(`/product/${item.productId}`)}
                         >
                           <Image
                             src={img}
@@ -115,7 +115,7 @@ export default function CartPage() {
                           <div className="flex justify-between items-start">
                             <div>
                               <h3
-                                onClick={() => router.push(`/product/${item._id}`)}
+                                onClick={() => router.push(`/product/${item.productId}`)}
                                 className="text-lg font-bold text-brand hover:text-brand/70 transition-colors cursor-pointer line-clamp-1"
                               >
                                 {item.title}
@@ -146,7 +146,7 @@ export default function CartPage() {
                           </div>
 
                           <div className="mt-4 flex items-end justify-between">
-                            <div className="flex items-center rounded-full border border-brand/10 bg-brand-light p-0.5">
+                            <div className="flex items-center rounded-3xl border border-brand/10 bg-brand-light p-0.5">
                               <button
                                 onClick={() => decreaseQty(item)}
                                 disabled={item.quantity <= 1}
@@ -164,8 +164,8 @@ export default function CartPage() {
                             </div>
 
                             <p className="flex flex-col items-end">
-                              <span className="text-xl font-black text-brand">₹{parseFloat(totalPrice).toLocaleString()}</span>
-                              <span className="text-xs text-brand/50 font-semibold">₹{item.discountedPrice.toLocaleString()} each</span>
+                              <span className="text-xl font-black text-brand">₹{parseFloat(totalPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                              <span className="text-xs text-brand/50 font-semibold">₹{item.discountedPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} each</span>
                             </p>
                           </div>
                         </div>
@@ -206,7 +206,7 @@ export default function CartPage() {
                 <div className="mt-8">
                   <button
                     onClick={handleProceed}
-                    className="w-full bg-brand text-brand-light py-3.5 rounded-full font-bold text-base hover:bg-brand/90 hover:shadow-lg transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-brand text-brand-light py-3.5 rounded-3xl font-bold text-base hover:bg-brand/90 hover:shadow-lg transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Checkout <Tag className="w-4 h-4" />
                   </button>

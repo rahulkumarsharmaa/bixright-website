@@ -307,13 +307,13 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           <div className="flex items-center gap-3">
             {/* Selling Price */}
             <span className="text-xl font-bold text-brand">
-              ₹{discountedPrice}
+              ₹{typeof discountedPrice === 'number' ? discountedPrice.toFixed(2) : (basePrice ?? 0).toFixed(2)}
             </span>
 
             {/* Cut Price */}
             {discountPercent > 0 && (
               <span className="text-lg line-through text-brand/40">
-                ₹{basePrice}
+                ₹{(basePrice ?? 0).toFixed(2)}
               </span>
             )}
 
@@ -359,42 +359,36 @@ export function ProductDetails({ product, onColorSelect }: Props) {
           <div className="flex items-center justify-between gap-4">
             {/* Left side: Quantity Selector */}
             <div className="flex flex-col">
-              <div className="flex items-center bg-white border border-brand/10 rounded-lg shadow-sm overflow-hidden">
+              <div className="flex items-center bg-brand/3 border border-brand/10 rounded-full p-1 w-fit shadow-xs gap-1">
                 {/* Decrease */}
                 <button
                   onClick={() => {
                     setQty((prev) => Math.max(1, prev - 1));
-                    // setShowStockOnQty(true);
                   }}
-                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-brand hover:bg-brand/10 active:scale-95 transition"
+                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center cursor-pointer text-sm font-bold text-brand hover:bg-brand hover:text-brand-light active:scale-90 transition shadow-xs"
                   aria-label="Decrease quantity"
                 >
                   −
                 </button>
 
                 {/* Quantity Number */}
-                <div className="w-10 h-10 flex items-center justify-center text-sm font-semibold text-brand border-x border-brand/10">
+                <div className="w-10 text-center text-sm font-extrabold text-brand">
                   {qty}
                 </div>
 
                 {/* Increase */}
                 <button
                   onClick={() => {
-
-                    if (isOutOfStock) {
-                      return;
-                    }
-
+                    if (isOutOfStock) return;
                     if (qty >= maxQty) {
                       setHighlightMax(true);
                       setTimeout(() => setHighlightMax(false), 1200);
                       return;
                     }
-
                     setShowStockOnQty(true);
                     setQty((prev) => Math.min(maxQty, prev + 1));
                   }}
-                  className="w-10 h-10 flex items-center justify-center cursor-pointer text-lg font-bold text-brand hover:bg-brand/10 active:scale-95 transition"
+                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center cursor-pointer text-sm font-bold text-brand hover:bg-brand hover:text-brand-light active:scale-90 transition shadow-xs"
                   aria-label="Increase quantity"
                 >
                   +

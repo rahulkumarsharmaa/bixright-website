@@ -363,9 +363,9 @@ export default function Header() {
                         {p.title}
                       </p>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-brand font-bold">₹{p.discountedPrice}</span>
+                        <span className="text-xs text-brand font-bold">₹{typeof p.discountedPrice === 'number' ? p.discountedPrice.toFixed(2) : (p.basePrice ?? 0).toFixed(2)}</span>
                         {typeof p.discountedPrice === 'number' && p.basePrice > p.discountedPrice && (
-                          <span className="text-[10px] text-brand/80 line-through">₹{p.basePrice}</span>
+                          <span className="text-[10px] text-brand/80 line-through">₹{(p.basePrice ?? 0).toFixed(2)}</span>
                         )}
                       </div>
                     </div>
@@ -588,7 +588,7 @@ export default function Header() {
                     }, 200);
                   }}
                 >
-                  <span className={`whitespace-nowrap hover:bg-brand/5 rounded-full px-4 py-2 transition-colors duration-300 ${activeMenu === cat._id ? "text-brand/90" : "group-hover:text-brand"}`}>
+                  <span className={`whitespace-nowrap hover:bg-brand/5 rounded-full px-4 py-2 capitalize transition-colors duration-300 ${activeMenu === cat._id ? "text-brand/90" : "group-hover:text-brand"}`}>
                     {cat.title}
                   </span>
                 </div>
@@ -778,7 +778,17 @@ export default function Header() {
                       >
                         <div className="space-y-4 text-sm text-gray-600 mb-5 pt-1">
                           <Link href="/profile" onClick={closeMobileMenu} className="flex items-center gap-3"><User size={18} /> Account Settings</Link>
-                          <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3"><Heart size={18} /> My Wishlist</Link>
+                          <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center justify-between w-full">
+                            <div className="flex items-center gap-3">
+                              <Heart size={18} />
+                              <span>My Wishlist</span>
+                            </div>
+                            {wishlistItemCount > 0 && (
+                              <span className="bg-brand text-brand-light text-[10px] font-extrabold px-2 py-0.5 rounded-full min-w-[1.25rem] text-center shadow-xs">
+                                {wishlistItemCount}
+                              </span>
+                            )}
+                          </Link>
                           <Link href="/orders" onClick={closeMobileMenu} className="flex items-center gap-3"><ShoppingCart size={18} /> My Orders</Link>
                           <div className="flex items-center gap-3"><HelpCircle size={18} /> Help Center</div>
                         </div>

@@ -38,11 +38,11 @@ export default function ShippingPolicyPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <div className="bg-white p-4 rounded-2xl border border-brand/10">
                 <span className="text-gray-400 font-semibold block uppercase text-[10px] tracking-wider mb-1">Shipping Charge</span>
-                <span className="text-xl font-bold text-brand">₹{policy.shippingCharge ?? 0}</span>
+                <span className="text-xl font-bold text-brand">₹{(policy.shippingCharge ?? 0).toFixed(2)}</span>
               </div>
               <div className="bg-white p-4 rounded-2xl border border-brand/10">
                 <span className="text-gray-400 font-semibold block uppercase text-[10px] tracking-wider mb-1">Free Shipping Order Minimum</span>
-                <span className="text-xl font-bold text-brand">₹{policy.minFreeShippingAmount ?? 0}+</span>
+                <span className="text-xl font-bold text-brand">₹{(policy.minFreeShippingAmount ?? 0).toFixed(2)}+</span>
               </div>
             </div>
           </section>

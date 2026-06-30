@@ -95,27 +95,41 @@ export default function FlashDeals() {
           products.map(product => {
             const img = product.images.find(i => i.isCover)?.imageUrl || "";
             return (
-              <Link key={product._id} href={`/product/${product._id}`} className="bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 transition group flex flex-col justify-between">
-                <div>
-                  <div className="relative aspect-square mb-2 bg-gray-50 rounded-xl md:rounded-2xl overflow-hidden">
-                    {img && <Image src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${img}`} alt={product.title} fill className="object-cover group-hover:scale-102 transition-transform duration-300" />}
-                    {product.discount > 0 && (
-                      <span className="absolute top-2 right-2 bg-discount text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-full">
-                        -{product.discount}%
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-xs md:text-sm font-medium line-clamp-1 mb-1">{product.title}</h3>
-                  </div>
+              <Link
+                key={product._id}
+                href={`/product/${product._id}`}
+                className="group bg-brand/3 hover:bg-brand/5 border border-brand/10 hover:border-brand/20 hover:shadow-md rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col h-full"
+              >
+                {/* Image */}
+                <div className="relative aspect-square mb-3.5 bg-white rounded-xl sm:rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0">
+                  {img && (
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${img}`}
+                      alt={product.title}
+                      fill
+                      className="object-contain group-hover:scale-102 transition-transform duration-500"
+                    />
+                  )}
+                  {product.discount > 0 && (
+                    <span className="absolute top-2 right-2 bg-discount text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 md:py-1 rounded-full z-10 shadow-sm">
+                      -{product.discount}%
+                    </span>
+                  )}
                 </div>
-                <div>
-                  <div className="flex items-center justify-between mt-2">
-                    <div className="flex flex-col items-start leading-tight">
+
+                {/* Info */}
+                <div className="flex-1 flex flex-col px-0.5">
+                  <h3 className="text-brand/90 font-bold text-xs sm:text-sm md:text-base leading-snug line-clamp-2 mb-2 group-hover:text-brand transition-colors capitalize min-h-[2.2rem] sm:min-h-[2.5rem]" title={product.title}>
+                    {product.title}
+                  </h3>
+
+                  {/* Price Block */}
+                  <div className="mt-auto pt-3 border-t border-brand/5 flex items-center justify-between">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-sm sm:text-base md:text-lg font-extrabold text-price">₹{product.discountedPrice.toFixed(2)}</span>
                       {product.discount > 0 && (
-                        <span className="text-[10px] md:text-xs text-gray-400 line-through font-semibold">₹{product.basePrice}</span>
+                        <span className="text-[10px] sm:text-xs text-gray-400 line-through font-semibold">₹{product.basePrice.toFixed(2)}</span>
                       )}
-                      <span className="text-base md:text-lg font-bold text-price">₹{product.discountedPrice}</span>
                     </div>
                     <button
                       onClick={(e) => {
@@ -123,10 +137,10 @@ export default function FlashDeals() {
                         e.stopPropagation();
                         handleAddToCart(product);
                       }}
-                      className="w-10 h-10 bg-brand/90 hover:bg-brand text-brand-light rounded-full  flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-sm"
+                      className="w-8 h-8 sm:w-10 sm:h-10 bg-brand hover:bg-brand/90 text-brand-light rounded-full flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-sm flex-shrink-0"
                       title="Add to Cart"
                     >
-                      <ShoppingCart size={20} strokeWidth={2.5} />
+                      <ShoppingCart size={16} strokeWidth={2.5} className="sm:w-5 sm:h-5" />
                     </button>
                   </div>
                 </div>

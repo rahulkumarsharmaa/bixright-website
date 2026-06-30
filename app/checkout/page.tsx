@@ -14,9 +14,12 @@ import {
   Plus,
   Minus,
   Copy,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 import { copyToClipboard } from "@/lib/utils";
+import { toast } from "sonner";
 import {
   Select,
   SelectTrigger,
@@ -49,7 +52,7 @@ type ShippingForm = Address;
 type BillingForm = Address;
 
 type PaymentForm = {
-  method: "card" | "cod";
+  method: "card" | "cod" | "";
   cardNumber: string;
   cardName: string;
   expiryDate: string;
@@ -98,7 +101,7 @@ export default function CheckoutPage(): React.ReactElement {
   const [sameAsShipping, setSameAsShipping] = useState<boolean>(true);
 
   const [payment, setPayment] = useState<PaymentForm>({
-    method: "card",
+    method: "",
     cardNumber: "",
     cardName: "",
     expiryDate: "",
@@ -227,11 +230,55 @@ export default function CheckoutPage(): React.ReactElement {
     }
   }, [sameAsShipping, shippingAddress]);
 
+  const [step, setStep] = useState(1);
+  const activeStep = step;
+
+  const goToBilling = () => {
+    if (validateShipping()) {
+      setStep(2);
+    } else {
+      toast.error("Please fill all required shipping details.");
+    }
+  };
+
+  const goToPayment = () => {
+    const billOk = sameAsShipping ? true : validateBilling();
+    if (billOk) {
+      setStep(3);
+    } else {
+      toast.error("Please fill all required billing details.");
+    }
+  };
+
   const placeOrder = async () => {
     if (!Array.isArray(cart) || cart.length === 0) return;
 
+    // Step 1 validation
     const shipOk = validateShipping();
+    if (!shipOk) {
+      setStep(1);
+      toast.error("Please fill all required shipping details.");
+      return;
+    }
+
+    // Step 2 validation
     const billOk = sameAsShipping ? true : validateBilling();
+    if (!billOk) {
+      setStep(2);
+      toast.error("Please fill all required billing details.");
+      return;
+    }
+
+    // Check if we need to advance to payment step first
+    if (step < 3) {
+      setStep(3);
+      return;
+    }
+
+    if (!payment.method) {
+      toast.error("Please select a payment method before proceeding.");
+      return;
+    }
 
     const paymentValidation = validatePayment(payment);
     setPayErrors(paymentValidation);
@@ -240,7 +287,8 @@ export default function CheckoutPage(): React.ReactElement {
       (msg) => msg && msg.length > 0
     );
 
-    if (!shipOk || !billOk || (payment.method === "card" && hasPaymentErrors)) {
+    if (payment.method === "card" && hasPaymentErrors) {
+      toast.error("Please correct your card details.");
       return;
     }
 
@@ -335,6 +383,7 @@ export default function CheckoutPage(): React.ReactElement {
     2
   );
 
+  // Step verification computed helpers for UI
   const isShippingComplete = useMemo(() => {
     return !!(shippingAddress.addressLine1 && shippingAddress.city && shippingAddress.state && shippingAddress.country && shippingAddress.postalCode);
   }, [shippingAddress]);
@@ -348,12 +397,6 @@ export default function CheckoutPage(): React.ReactElement {
     if (payment.method === "cod") return true;
     return !!(payment.cardNumber && payment.cardName && payment.expiryDate && payment.cvv);
   }, [payment]);
-
-  const activeStep = useMemo(() => {
-    if (!isShippingComplete) return 1;
-    if (!isBillingComplete) return 2;
-    return 3;
-  }, [isShippingComplete, isBillingComplete]);
 
   function handleShipChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -508,26 +551,39 @@ export default function CheckoutPage(): React.ReactElement {
           </h1>
           {/* Stepper visual guide */}
           <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm font-semibold text-brand/60 bg-white p-2.5 rounded-2xl border border-brand/10 shadow-sm">
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isShippingComplete ? "text-green-600 font-bold" : activeStep === 1 ? "text-brand font-bold " : "text-brand/40"}`}>
+            <button
+              onClick={() => setStep(1)}
+              className="flex items-center gap-1.5 transition-all duration-300 focus:outline-none cursor-pointer text-left border-none bg-transparent"
+            >
               <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isShippingComplete ? "bg-green-600 text-white" : activeStep === 1 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isShippingComplete ? "✓" : "1"}
               </span>
-              Shipping
-            </span>
+              <span className={activeStep === 1 ? "text-brand font-bold" : isShippingComplete ? "text-green-600" : "text-brand/40"}>Shipping</span>
+            </button>
             <span className="text-brand/35 font-bold">➔</span>
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 2 ? "text-brand font-bold " : "text-brand/40"}`}>
+            <button
+              onClick={() => {
+                if (validateShipping()) setStep(2);
+              }}
+              className="flex items-center gap-1.5 transition-all duration-300 focus:outline-none cursor-pointer text-left border-none bg-transparent"
+            >
               <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 2 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isBillingComplete && isShippingComplete ? "✓" : "2"}
               </span>
-              Billing
-            </span>
+              <span className={activeStep === 2 ? "text-brand font-bold" : isBillingComplete && isShippingComplete ? "text-green-600" : "text-brand/40"}>Billing</span>
+            </button>
             <span className="text-brand/35 font-bold">➔</span>
-            <span className={`flex items-center gap-1.5 transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "text-green-600 font-bold" : activeStep === 3 ? "text-brand font-bold " : "text-brand/40"}`}>
+            <button
+              onClick={() => {
+                if (validateShipping() && (sameAsShipping ? true : validateBilling())) setStep(3);
+              }}
+              className="flex items-center gap-1.5 transition-all duration-300 focus:outline-none cursor-pointer text-left border-none bg-transparent"
+            >
               <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black transition-all duration-300 ${isPaymentComplete && isBillingComplete && isShippingComplete ? "bg-green-600 text-white" : activeStep === 3 ? "bg-brand text-brand-light" : "bg-brand/5 text-brand/40"}`}>
                 {isPaymentComplete && isBillingComplete && isShippingComplete ? "✓" : "3"}
               </span>
-              Payment
-            </span>
+              <span className={activeStep === 3 ? "text-brand font-bold" : isPaymentComplete && isBillingComplete && isShippingComplete ? "text-green-600" : "text-brand/40"}>Payment</span>
+            </button>
           </div>
         </div>
 
@@ -538,268 +594,339 @@ export default function CheckoutPage(): React.ReactElement {
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12"
         >
           {/* LEFT SIDE — FORM SECTIONS */}
-          <div className="lg:col-span-8 space-y-8">
-
-            {/* SHIPPING */}
-            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border  shadow-sm border-brand/10 transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-brand/5">
-                <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-brand">Shipping Address</h2>
-                  <p className="text-xs text-brand/50 font-semibold mt-0.5">Specify where you would like your order delivered</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <Input
-                  label="Address Line 1"
-                  name="addressLine1"
-                  placeholder="Street address, company name, c/o"
-                  value={shippingAddress.addressLine1}
-                  onChange={handleShipChange}
-                  error={shipErrors.addressLine1}
-                  className="md:col-span-2"
-                />
-                <Input
-                  label="Address Line 2 (Optional)"
-                  name="addressLine2"
-                  placeholder="Apartment, suite, unit, etc."
-                  value={shippingAddress.addressLine2 ?? ""}
-                  onChange={handleShipChange}
-                  className="md:col-span-2"
-                />
-                <Input
-                  label="City"
-                  name="city"
-                  placeholder="City"
-                  value={shippingAddress.city}
-                  onChange={handleShipChange}
-                  error={shipErrors.city}
-                />
-                <Input
-                  label="State / Province"
-                  name="state"
-                  placeholder="State"
-                  value={shippingAddress.state}
-                  onChange={handleShipChange}
-                  error={shipErrors.state}
-                />
-                <CountrySelect
-                  label="Country"
-                  name="country"
-                  value={shippingAddress.country}
-                  onChange={handleShipChange}
-                  error={shipErrors.country}
-                />
-                <Input
-                  label="Postal Code"
-                  name="postalCode"
-                  placeholder="ZIP / Postal Code"
-                  value={shippingAddress.postalCode}
-                  onChange={handleShipChange}
-                  error={shipErrors.postalCode}
-                />
-              </div>
-            </section>
-
-            {/* BILLING */}
-            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand/5">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-2xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
-                    <CreditCard className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-brand">Billing Address</h2>
-                    <p className="text-xs text-brand/50 font-semibold mt-0.5">Matches your payment method billing statement</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="flex items-center gap-3 p-4 border border-brand/10 rounded-2xl sm:rounded-4xl cursor-pointer hover:bg-brand/5 hover:border-brand/30 transition-all group">
-                  <m.div
-                    whileTap={{ scale: 0.9 }}
-                    className={`w-5 h-5 rounded-4xl border flex items-center justify-center transition-colors duration-200 ${sameAsShipping ? "bg-brand border-brand text-brand-light" : "border-brand/20 bg-white text-transparent"}`}
-                  >
-                    {sameAsShipping && <CheckCircle className="w-3.5 h-3.5 text-brand-light" />}
-                  </m.div>
-                  <input
-                    type="checkbox"
-                    checked={sameAsShipping}
-                    onChange={() => setSameAsShipping(!sameAsShipping)}
-                    className="hidden"
-                  />
-                  <span className="text-sm font-semibold text-brand/70 group-hover:text-brand transition-colors">Same as shipping address</span>
-                </label>
-              </div>
-
-              <AnimatePresence>
-                {!sameAsShipping && (
-                  <m.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-5 overflow-hidden"
-                  >
-                    <Input
-                      label="Address Line 1"
-                      name="addressLine1"
-                      placeholder="Street address"
-                      value={billing.addressLine1}
-                      onChange={handleBillChange}
-                      error={billErrors.addressLine1}
-                      className="md:col-span-2"
-                    />
-                    <Input
-                      label="Address Line 2"
-                      placeholder="Apartment, suite, unit, etc."
-                      name="addressLine2"
-                      value={billing.addressLine2 ?? ""}
-                      onChange={handleBillChange}
-                      className="md:col-span-2"
-                    />
-                    <Input
-                      label="City"
-                      name="city"
-                      placeholder="City"
-                      value={billing.city}
-                      onChange={handleBillChange}
-                      error={billErrors.city}
-                    />
-                    <Input
-                      label="State"
-                      name="state"
-                      placeholder="State"
-                      value={billing.state}
-                      onChange={handleBillChange}
-                      error={billErrors.state}
-                    />
-                    <CountrySelect
-                      label="Country"
-                      name="country"
-                      value={billing.country}
-                      onChange={handleBillChange}
-                      error={billErrors.country}
-                    />
-                    <Input
-                      label="Postal Code"
-                      name="postalCode"
-                      placeholder="ZIP Code"
-                      value={billing.postalCode}
-                      onChange={handleBillChange}
-                      error={billErrors.postalCode}
-                    />
-                  </m.div>
-                )}
-              </AnimatePresence>
-            </section>
-
-            {/* PAYMENT */}
-            <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
-                  <CreditCard className="w-5 h-5" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-brand">Payment Method</h2>
-                  <p className="text-xs text-brand/50 font-semibold mt-0.5">Secure, encrypted checkout transactions</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                <MethodButton
-                  active={payment.method === "card"}
-                  label="Credit / Debit Card"
-                  subLabel="Pay securely using card payment"
-                  icon={<CreditCard className="w-6 h-6" />}
-                  onClick={() => setPayment({ ...payment, method: "card" })}
-                />
-                <MethodButton
-                  active={payment.method === "cod"}
-                  label="Cash on Delivery"
-                  subLabel="Pay in cash at your doorstep"
-                  icon={<Truck className="w-6 h-6" />}
-                  onClick={() => setPayment({ ...payment, method: "cod" })}
-                />
-              </div>
-
-              <AnimatePresence mode="wait">
-                {payment.method === "card" ? (
-                  <m.div
-                    key="card-form"
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-5 p-6 bg-brand/3 border border-brand/10 rounded-3xl"
-                  >
-                    <Input
-                      label="Card Number"
-                      name="cardNumber"
-                      placeholder="0000 0000 0000 0000"
-                      value={payment.cardNumber}
-                      onChange={handlePayChange}
-                      error={payErrors.cardNumber}
-                      className="md:col-span-2"
-                      icon={<CreditCard className="w-4 h-4 text-brand/40" />}
-                    />
-                    <Input
-                      label="Card Holder Name"
-                      name="cardName"
-                      placeholder="Name on card"
-                      value={payment.cardName}
-                      onChange={handlePayChange}
-                      error={payErrors.cardName}
-                      className="md:col-span-2"
-                    />
-                    <Input
-                      label="Expiry Date"
-                      name="expiryDate"
-                      placeholder="MM/YY"
-                      value={payment.expiryDate}
-                      onChange={handlePayChange}
-                      error={payErrors.expiryDate}
-                    />
-                    <Input
-                      label="CVV"
-                      type="password"
-                      name="cvv"
-                      placeholder="123"
-                      value={payment.cvv}
-                      onChange={handlePayChange}
-                      error={payErrors.cvv}
-                    />
-                  </m.div>
-                ) : (
-                  <m.div
-                    key="cod-message"
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="p-6 bg-brand/3 border border-brand/10 rounded-3xl flex items-start gap-4"
-                  >
-                    <Truck className="w-6 h-6 text-brand flex-shrink-0 mt-0.5 " />
-                    <div>
-                      <p className="font-bold text-sm text-brand">Cash on Delivery Selected</p>
-                      <p className="text-xs text-brand/50 font-semibold mt-1 leading-relaxed">
-                        Pay for your order at the time of delivery. Please ensure that someone is available to receive the shipment and make the cash payment.
-                      </p>
+          <div className="lg:col-span-8 overflow-hidden min-h-[400px] flex flex-col h-full">
+            <AnimatePresence mode="wait">
+              {step === 1 && (
+                <m.div
+                  key="step-shipping"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-6 flex-1 flex flex-col h-full"
+                >
+                  {/* SHIPPING */}
+                  <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300 flex-1 flex flex-col justify-between h-full">
+                    <div className="flex items-center gap-4 mb-6 pb-4 border-b border-brand/5">
+                      <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
+                        <MapPin className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-brand">Shipping Address</h2>
+                        <p className="text-xs text-brand/50 font-semibold mt-0.5">Specify where you would like your order delivered</p>
+                      </div>
                     </div>
-                  </m.div>
-                )}
-              </AnimatePresence>
-            </section>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <Input
+                        label="Address Line 1"
+                        name="addressLine1"
+                        placeholder="Street address, company name, c/o"
+                        value={shippingAddress.addressLine1}
+                        onChange={handleShipChange}
+                        error={shipErrors.addressLine1}
+                        className="md:col-span-2"
+                      />
+                      <Input
+                        label="Address Line 2 (Optional)"
+                        name="addressLine2"
+                        placeholder="Apartment, suite, unit, etc."
+                        value={shippingAddress.addressLine2 ?? ""}
+                        onChange={handleShipChange}
+                        className="md:col-span-2"
+                      />
+                      <Input
+                        label="City"
+                        name="city"
+                        placeholder="City"
+                        value={shippingAddress.city}
+                        onChange={handleShipChange}
+                        error={shipErrors.city}
+                      />
+                      <Input
+                        label="State / Province"
+                        name="state"
+                        placeholder="State"
+                        value={shippingAddress.state}
+                        onChange={handleShipChange}
+                        error={shipErrors.state}
+                      />
+                      <CountrySelect
+                        label="Country"
+                        name="country"
+                        value={shippingAddress.country}
+                        onChange={handleShipChange}
+                        error={shipErrors.country}
+                      />
+                      <Input
+                        label="Postal Code"
+                        name="postalCode"
+                        placeholder="ZIP / Postal Code"
+                        value={shippingAddress.postalCode}
+                        onChange={handleShipChange}
+                        error={shipErrors.postalCode}
+                      />
+                    </div>
+
+                    <div className="flex justify-end mt-8 pt-4 border-t border-brand/5">
+                      <button
+                        type="button"
+                        onClick={goToBilling}
+                        className="px-6 py-2.5 bg-brand hover:bg-brand/90 text-brand-light font-bold rounded-full text-sm transition shadow-xs cursor-pointer flex items-center gap-2"
+                      >
+                        Continue to Billing <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </section>
+                </m.div>
+              )}
+
+              {step === 2 && (
+                <m.div
+                  key="step-billing"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-6 flex-1 flex flex-col h-full"
+                >
+                  {/* BILLING */}
+                  <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300 flex-1 flex flex-col justify-between h-full">
+                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand/5">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-2xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
+                          <CreditCard className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-bold text-brand">Billing Address</h2>
+                          <p className="text-xs text-brand/50 font-semibold mt-0.5">Matches your payment method billing statement</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-6">
+                      <label className="flex items-center gap-3 p-4 border border-brand/10 rounded-2xl sm:rounded-4xl cursor-pointer hover:bg-brand/5 hover:border-brand/30 transition-all group">
+                        <m.div
+                          whileTap={{ scale: 0.9 }}
+                          className={`w-5 h-5 rounded-4xl border flex items-center justify-center transition-colors duration-200 ${sameAsShipping ? "bg-brand border-brand text-brand-light" : "border-brand/20 bg-white text-transparent"}`}
+                        >
+                          {sameAsShipping && <CheckCircle className="w-3.5 h-3.5 text-brand-light" />}
+                        </m.div>
+                        <input
+                          type="checkbox"
+                          checked={sameAsShipping}
+                          onChange={() => setSameAsShipping(!sameAsShipping)}
+                          className="hidden"
+                        />
+                        <span className="text-sm font-semibold text-brand/70 group-hover:text-brand transition-colors">Same as shipping address</span>
+                      </label>
+                    </div>
+
+                    <AnimatePresence>
+                      {!sameAsShipping && (
+                        <m.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-5 overflow-hidden mb-6"
+                        >
+                          <Input
+                            label="Address Line 1"
+                            name="addressLine1"
+                            placeholder="Street address"
+                            value={billing.addressLine1}
+                            onChange={handleBillChange}
+                            error={billErrors.addressLine1}
+                            className="md:col-span-2"
+                          />
+                          <Input
+                            label="Address Line 2"
+                            placeholder="Apartment, suite, unit, etc."
+                            name="addressLine2"
+                            value={billing.addressLine2 ?? ""}
+                            onChange={handleBillChange}
+                            className="md:col-span-2"
+                          />
+                          <Input
+                            label="City"
+                            name="city"
+                            placeholder="City"
+                            value={billing.city}
+                            onChange={handleBillChange}
+                            error={billErrors.city}
+                          />
+                          <Input
+                            label="State"
+                            name="state"
+                            placeholder="State"
+                            value={billing.state}
+                            onChange={handleBillChange}
+                            error={billErrors.state}
+                          />
+                          <CountrySelect
+                            label="Country"
+                            name="country"
+                            value={billing.country}
+                            onChange={handleBillChange}
+                            error={billErrors.country}
+                          />
+                          <Input
+                            label="Postal Code"
+                            name="postalCode"
+                            placeholder="ZIP Code"
+                            value={billing.postalCode}
+                            onChange={handleBillChange}
+                            error={billErrors.postalCode}
+                          />
+                        </m.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex justify-between items-center mt-8 pt-4 border-t border-brand/5">
+                      <button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold border border-brand/20 text-brand rounded-full hover:bg-brand/5 transition cursor-pointer"
+                      >
+                        <ChevronLeft size={16} /> Back to Shipping
+                      </button>
+                      <button
+                        type="button"
+                        onClick={goToPayment}
+                        className="flex items-center gap-1.5 px-6 py-2.5 bg-brand hover:bg-brand/90 text-brand-light font-bold rounded-full text-sm transition shadow-xs cursor-pointer"
+                      >
+                        Continue to Payment <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </section>
+                </m.div>
+              )}
+
+              {step === 3 && (
+                <m.div
+                  key="step-payment"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-6 flex-1 flex flex-col h-full"
+                >
+                  {/* PAYMENT */}
+                  <section className="bg-brand/5 rounded-2xl sm:rounded-4xl p-6 md:p-8 border shadow-sm border-brand/10 transition-all duration-300 flex-1 flex flex-col justify-between h-full">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-10 h-10 rounded-4xl bg-brand/3 border border-brand/10 flex items-center justify-center text-brand">
+                        <CreditCard className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-brand">Payment Method</h2>
+                        <p className="text-xs text-brand/50 font-semibold mt-0.5">Secure, encrypted checkout transactions</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                      <MethodButton
+                        active={payment.method === "card"}
+                        label="Credit / Debit Card"
+                        subLabel="Pay securely using card payment"
+                        icon={<CreditCard className="w-6 h-6" />}
+                        onClick={() => setPayment({ ...payment, method: "card" })}
+                      />
+                      <MethodButton
+                        active={payment.method === "cod"}
+                        label="Cash on Delivery"
+                        subLabel="Pay in cash at your doorstep"
+                        icon={<Truck className="w-6 h-6" />}
+                        onClick={() => setPayment({ ...payment, method: "cod" })}
+                      />
+                    </div>
+
+                    <AnimatePresence mode="wait">
+                      {payment.method === "card" ? (
+                        <m.div
+                          key="card-form"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-5 p-6 bg-brand/3 border border-brand/10 rounded-3xl"
+                        >
+                          <Input
+                            label="Card Number"
+                            name="cardNumber"
+                            placeholder="0000 0000 0000 0000"
+                            value={payment.cardNumber}
+                            onChange={handlePayChange}
+                            error={payErrors.cardNumber}
+                            className="md:col-span-2"
+                            icon={<CreditCard className="w-4 h-4 text-brand/40" />}
+                          />
+                          <Input
+                            label="Card Holder Name"
+                            name="cardName"
+                            placeholder="Name on card"
+                            value={payment.cardName}
+                            onChange={handlePayChange}
+                            error={payErrors.cardName}
+                            className="md:col-span-2"
+                          />
+                          <Input
+                            label="Expiry Date"
+                            name="expiryDate"
+                            placeholder="MM/YY"
+                            value={payment.expiryDate}
+                            onChange={handlePayChange}
+                            error={payErrors.expiryDate}
+                          />
+                          <Input
+                            label="CVV"
+                            type="password"
+                            name="cvv"
+                            placeholder="123"
+                            value={payment.cvv}
+                            onChange={handlePayChange}
+                            error={payErrors.cvv}
+                          />
+                        </m.div>
+                      ) : payment.method === "cod" ? (
+                        <m.div
+                          key="cod-message"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          className="p-6 bg-brand/3 border border-brand/10 rounded-3xl flex items-start gap-4"
+                        >
+                          <Truck className="w-6 h-6 text-brand flex-shrink-0 mt-0.5 " />
+                          <div>
+                            <p className="font-bold text-sm text-brand">Cash on Delivery Selected</p>
+                            <p className="text-xs text-brand/50 font-semibold mt-1 leading-relaxed">
+                              Pay for your order at the time of delivery. Please ensure that someone is available to receive the shipment and make the cash payment.
+                            </p>
+                          </div>
+                        </m.div>
+                      ) : null}
+                    </AnimatePresence>
+
+                    <div className="flex justify-start items-center mt-8 pt-4 border-t border-brand/5">
+                      <button
+                        type="button"
+                        onClick={() => setStep(2)}
+                        className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold border border-brand/20 text-brand rounded-full hover:bg-brand/5 transition cursor-pointer"
+                      >
+                        <ChevronLeft size={16} /> Back to Billing
+                      </button>
+                    </div>
+                  </section>
+                </m.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* RIGHT SIDE — ORDER SUMMARY */}
-          <div className="lg:col-span-4 pl-0 lg:pl-4">
-            <aside className="bg-brand/5 rounded-2xl sm:rounded-4xl border border-brand/10 shadow-sm p-6 md:p-8 sticky top-28 transition-all duration-300">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand/5">
+          <div className="lg:col-span-4 pl-0 lg:pl-4 flex flex-col h-full">
+            <aside className="bg-brand/5 rounded-2xl sm:rounded-4xl border border-brand/10 shadow-sm p-6 md:p-8 transition-all duration-300 flex-1 flex flex-col justify-between h-full">
+              <div className="flex items-center justify-between mb-4 pb-2 border-b border-brand/5">
                 <h2 className="text-xl font-bold text-brand tracking-tight">Order Summary</h2>
                 {Array.isArray(cart) && cart.length > 0 && (
                   <span className=" text-brand text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
@@ -827,7 +954,7 @@ export default function CheckoutPage(): React.ReactElement {
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
                         <div className="flex justify-between items-start mb-0.5">
                           <h3 className="font-bold text-sm text-brand line-clamp-1">{it.title}</h3>
-                          <p className="font-bold text-sm text-brand">₹{(it.discountedPrice * it.quantity).toFixed(0)}</p>
+                          <p className="font-bold text-sm text-brand">₹{(it.discountedPrice * it.quantity).toFixed(2)}</p>
                         </div>
                         <p className="text-[10px] text-brand/40 font-bold uppercase tracking-wider mb-2">{it.brandName || "Electronics"}</p>
 
@@ -863,7 +990,7 @@ export default function CheckoutPage(): React.ReactElement {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-brand/40 font-medium text-sm">Your cart is empty</div>
+                  <div className="text-center py-4 text-brand/40 font-medium text-sm">Your cart is empty</div>
                 )}
               </div>
 
@@ -905,7 +1032,7 @@ export default function CheckoutPage(): React.ReactElement {
                 <Row label="Subtotal" value={`₹${subtotal.toFixed(2)}`} />
                 {discountAmount > 0 && <Row label="Discount" value={`-₹${discountAmount.toFixed(2)}`} highlightClass="text-green-600" />}
                 {couponApplied > 0 && <Row label="Coupon" value={`-₹${couponApplied.toFixed(2)}`} highlightClass="text-green-600" />}
-                <Row label="Shipping" value={shipping === 0 ? "Free" : `₹${shipping}`} highlightClass={shipping === 0 ? "text-green-600" : ""} />
+                <Row label="Shipping" value={shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`} highlightClass={shipping === 0 ? "text-green-600" : ""} />
               </div>
 
               <div className="flex justify-between items-center py-6">

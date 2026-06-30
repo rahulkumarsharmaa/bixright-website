@@ -165,14 +165,14 @@ export default function Page() {
                     <div className="mt-1 flex items-center gap-2">
                       {/* Selling Price */}
                       <span className="text-lg font-semibold text-gray-900">
-                        ₹{item.discountedPrice}
+                        ₹{typeof item.discountedPrice === 'number' ? item.discountedPrice.toFixed(2) : (item.basePrice ?? 0).toFixed(2)}
                       </span>
 
                       {/* Cut Price (if exists and greater than base price) */}
                       {typeof item.discountedPrice === 'number' &&
                         item.discountedPrice < item.basePrice && (
                           <span className="text-sm line-through text-gray-400">
-                            ₹{item.basePrice}
+                            ₹{(item.basePrice ?? 0).toFixed(2)}
                           </span>
                         )}
 

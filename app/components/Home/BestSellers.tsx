@@ -104,9 +104,9 @@ export default function BestSellers() {
                     <p className="text-xs text-gray-600 font-semibold uppercase">{product.subCategoryName}</p>
                     <h3 className="font-medium text-gray-900 text-sm line-clamp-2 my-1 min-h-[40px]">{product.title}</h3>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="font-bold text-gray-900">₹{product.discountedPrice}</span>
+                      <span className="font-bold text-gray-900">₹{product.discountedPrice.toFixed(2)}</span>
                       {product.discountedPrice < product.basePrice && (
-                        <span className="text-xs text-gray-400 line-through">₹{product.basePrice}</span>
+                        <span className="text-xs text-gray-400 line-through">₹{product.basePrice.toFixed(2)}</span>
                       )}
                     </div>
                   </div>

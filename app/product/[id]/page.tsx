@@ -50,9 +50,9 @@ const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/product/get-product-by-id`;
 async function getProduct(id: string): Promise<Product | null> {
   try {
     const url = `${BASE_URL}/${id}`;
-    console.log("Fetching product from URL:", url);
+    // console.log("Fetching product from URL:", url);
     const res = await fetch(url, { cache: "no-store" });
-    console.log("Fetch response status:", res.status);
+    // console.log("Fetch response status:", res.status);
     if (!res.ok) {
       console.error("Fetch response was not OK");
       return null;

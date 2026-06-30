@@ -577,31 +577,31 @@ export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props
   };
 
   return (
-    <main className={`relative ${isEmbedded ? '' : 'min-h-screen'} bg-transparent px-4 sm:px-6 py-6 font-sans`}>
-      <div className="max-w-5xl mx-auto md:px-6">
+    <main className={`relative ${isEmbedded ? 'pt-4 sm:pt-6' : 'min-h-screen py-12'} bg-transparent px-4 sm:px-6 pb-6 font-sans`}>
+      <div className="max-w-5xl mx-auto md:px-6 mt-8 sm:mt-10 md:mt-12">
 
         {/* HEADER SECTION */}
-        <div className="flex flex-row items-center justify-between gap-4 mb-8 w-full">
+        <div className="flex flex-row items-center justify-between gap-4 mb-8 w-full border-b border-brand/5 pb-4">
           <div className="flex items-center gap-3">
             {/* Mobile Sidebar Trigger */}
-            {setSidebarOpen && (
+            {setSidebarOpen && !isEmbedded && (
               <div className="lg:hidden">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-light border border-gray-200 shadow-sm text-gray-700"
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white border border-brand/10 shadow-xs text-brand cursor-pointer hover:bg-brand/5 active:scale-95 transition"
                 >
                   <LuSquareSplitHorizontal size={20} />
                 </button>
               </div>
             )}
             <div>
-              <h1 className=" text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Your Orders</h1>
-              <p className="hidden sm:block text-sm text-gray-500">Track, manage and return your orders</p>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-brand tracking-tight">Your Orders</h1>
+              <p className="hidden sm:block text-sm text-brand/50 font-semibold mt-0.5">Track, manage and return your orders</p>
             </div>
           </div>
 
           {/* Filter Component */}
-          <div className="flex-shrink-0 w-32 sm:w-auto">
+          <div className="flex-shrink-0 w-28 sm:w-auto">
             <FilterProduct filter={filter} setFilter={setFilter} />
           </div>
         </div>
@@ -648,13 +648,18 @@ export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props
                     {/* CARD HEADER */}
                     <div
                       onClick={() => setOpenOrder(isOpen ? null : order._id)}
-                      className="p-4 sm:p-5 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative z-20 bg-brand-light"
+                      className="p-4 sm:p-5 cursor-pointer flex justify-between items-start relative z-20 bg-brand-light gap-4"
                     >
-                      {/* Order Info & Images Preview */}
-                      <div className="md:col-span-5 space-y-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Order ID</span>
-                          <span className="text-xs font-mono text-gray-600 bg-brand/10 px-2 py-0.5 rounded-full">{order.orderId}</span>
+                      {/* Left side: Order Info & Images Preview */}
+                      <div className="space-y-2.5 flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[10px] font-black text-brand/40 uppercase tracking-widest">Order ID</span>
+                          <span className="text-xs font-mono text-brand bg-brand/5 border border-brand/10 px-2 py-0.5 rounded-full">{order.orderId}</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-brand/60">
+                          <Calendar size={12} className="text-brand/40" />
+                          {formatDate(order.createdAt)}
                         </div>
 
                         {/* Collapsed Images Preview */}
@@ -667,51 +672,42 @@ export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props
                           >
                             {order.products.slice(0, 4).map((item, idx) => (
                               <m.div
-                                layoutId={`img-${order._id}-${item.variantId}`}
-                                key={item.variantId}
+                                layoutId={`img-${order._id}-${item.variantId || idx}`}
+                                key={item.variantId || `${item.productId || 'product'}-${idx}`}
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                className="relative w-12 h-12 rounded-xl border-2 border-white bg-gray-100 overflow-hidden shadow-sm z-10"
+                                className="relative w-10 h-10 rounded-xl border-2 border-white bg-brand/5 overflow-hidden shadow-xs"
                                 style={{ zIndex: 10 - idx }}
                               >
                                 {item.image ? (
                                   <Image src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.image}`} alt={item.title} fill className="object-cover object-top" />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={12} /></div>
+                                  <div className="w-full h-full flex items-center justify-center text-brand/35"><Package size={10} /></div>
                                 )}
                               </m.div>
                             ))}
                             {order.products.length > 4 && (
-                              <div className="w-10 h-10 rounded-xl border-2 border-white bg-gray-500 flex items-center justify-center text-[10px] font-bold text-gray-500 z-0">
+                              <div className="w-8 h-8 rounded-xl border-2 border-white bg-brand/10 flex items-center justify-center text-[10px] font-bold text-brand z-0">
                                 +{order.products.length - 4}
                               </div>
                             )}
                           </m.div>
                         )}
-
-                        <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                          <Calendar size={14} className="text-gray-400" />
-                          {formatDate(order.createdAt)}
-                        </div>
                       </div>
 
-                      {/* Amount & Status */}
-                      <div className="md:col-span-3 flex flex-col md:flex-row md:items-center md:justify-center gap-2 md:gap-8">
-                        <div>
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Total Amount</span>
-                          <span className="text-lg font-bold text-gray-900">₹{order.totalAmount.toLocaleString()}</span>
-                        </div>
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="md:col-span-3 flex md:justify-end items-center gap-3">
+                      {/* Right side: Status, Amount, and Toggle Chevron */}
+                      <div className="flex flex-col items-end justify-between self-stretch flex-shrink-0 text-right min-w-[120px]">
                         <ModernStatusBadge status={order.orderStatus} />
-                      </div>
 
-                      {/* Toggle Icon */}
-                      <div className="md:col-span-1 flex justify-end">
-                        <m.div animate={{ rotate: isOpen ? 180 : 0 }}>
-                          <ChevronDown className="text-gray-400" size={20} />
-                        </m.div>
+                        <div className="mt-auto pt-2 flex items-center gap-2">
+                          <div className="text-right">
+                            <span className="text-[9px] font-black text-brand/40 uppercase tracking-widest block leading-none mb-0.5">Total</span>
+                            <span className="text-sm sm:text-base font-black text-brand">₹{order.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          </div>
+
+                          <m.div animate={{ rotate: isOpen ? 180 : 0 }} className="flex-shrink-0 ml-1">
+                            <ChevronDown className="text-brand/40" size={16} />
+                          </m.div>
+                        </div>
                       </div>
                     </div>
 
@@ -759,9 +755,9 @@ export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props
 
                             {/* 3. Product List */}
                             <div className="space-y-4">
-                              {order.products.map((item) => (
+                              {order.products.map((item, idx) => (
                                 <div
-                                  key={item.variantId}
+                                  key={item.variantId || `${item.productId || 'product'}-${idx}`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     // Navigate to product page using productId
@@ -795,7 +791,7 @@ export default function OrdersPage({ setSidebarOpen, isEmbedded = false }: Props
                                     </div>
                                   </div>
                                   <div className="text-right flex-shrink-0">
-                                    <p className="text-sm font-bold text-gray-900">₹{item.total.toLocaleString()}</p>
+                                    <p className="text-sm font-bold text-gray-900">₹{item.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                                     <span className="text-xs text-amber-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 inline-block duration-300">View Details &rarr;</span>
                                   </div>
                                 </div>

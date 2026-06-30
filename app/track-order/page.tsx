@@ -409,7 +409,7 @@ export default function TrackOrderPage() {
                             <div className="flex items-center gap-3 text-xs font-semibold text-brand/60">
                               <span>Qty: {item.quantity}</span>
                               <span className="w-1 h-1 bg-brand/20 rounded-full" />
-                              <span className="text-price font-bold">₹{item.total.toLocaleString()}</span>
+                              <span className="text-price font-bold">₹{item.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
                           </div>
                         </m.div>
@@ -438,7 +438,7 @@ export default function TrackOrderPage() {
                       <div className="pt-8 border-t border-brand/15">
                         <div className="flex justify-between items-center text-sm mb-2 font-medium">
                           <span className="text-brand/60">Subtotal</span>
-                          <span className="font-bold text-brand">₹{orderData.totalAmount.toLocaleString()}</span>
+                          <span className="font-bold text-brand">₹{orderData.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm mb-4 font-medium">
                           <span className="text-brand/60">Shipping</span>
@@ -446,7 +446,7 @@ export default function TrackOrderPage() {
                         </div>
                         <div className="flex justify-between items-center text-lg font-black border-t border-brand/10 pt-4">
                           <span className="text-brand">Total</span>
-                          <span className="text-brand">₹{orderData.totalAmount.toLocaleString()}</span>
+                          <span className="text-brand">₹{orderData.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                     </div>

@@ -21,8 +21,9 @@ import { LuSquareSplitHorizontal } from "react-icons/lu";
 import Wishlist from "../wishlist/page";
 import OrdersPage from "../orders/page";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
 import { useSite } from "../context/siteSetting";
+import { useWishlist } from "../context/WishlistContext";
+import { toast } from "sonner";
 
 // --- TYPES ---
 type Address = {
@@ -76,6 +77,7 @@ const itemVariants = {
 function ProfileContent() {
   const router = useRouter();
   const { siteData } = useSite();
+  const { wishlistItemCount } = useWishlist();
   const searchParams = useSearchParams();
   const tabValue = searchParams.get("tab");
   const [selectedNav, setSelectedNav] = useState(tabValue ?? "profile");
@@ -300,14 +302,23 @@ function ProfileContent() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedNav(item.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-4xl transition-all duration-200 cursor-pointer
+                    className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-4xl transition-all duration-200 cursor-pointer
                                 ${isActive
                         ? "bg-brand text-white shadow-md shadow-brand/20"
                         : "text-gray-600 hover:bg-brand/5 hover:text-brand"
                       }`}
                   >
-                    <Icon size={18} className={isActive ? "text-white" : "text-gray-400"} />
-                    {item.label}
+                    <div className="flex items-center gap-3">
+                      <Icon size={18} className={isActive ? "text-white" : "text-gray-400"} />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.id === "wishlist" && wishlistItemCount > 0 && (
+                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full min-w-[1.25rem] text-center shadow-xs
+                        ${isActive ? "bg-white text-brand" : "bg-brand text-brand-light"}`}
+                      >
+                        {wishlistItemCount}
+                      </span>
+                    )}
                   </button>
                 )
               })}
@@ -632,14 +643,23 @@ function ProfileContent() {
                         setSelectedNav(item.id);
                         setSidebarOpen(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all cursor-pointer
+                      className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all cursor-pointer
                                         ${selectedNav === item.id
                           ? "bg-brand text-white"
                           : "text-gray-600 hover:bg-gray-50 hover:text-brand"
                         }`}
                     >
-                      <item.icon size={20} />
-                      {item.label}
+                      <div className="flex items-center gap-3">
+                        <item.icon size={20} />
+                        <span>{item.label}</span>
+                      </div>
+                      {item.id === "wishlist" && wishlistItemCount > 0 && (
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full min-w-[1.25rem] text-center shadow-xs
+                          ${selectedNav === item.id ? "bg-white text-brand" : "bg-brand text-brand-light"}`}
+                        >
+                          {wishlistItemCount}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
