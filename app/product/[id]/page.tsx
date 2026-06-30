@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
-  
+
   if (!product) {
     return {
       title: "Product Not Found | Bixright",

@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "bixright.net",
         pathname: "/**",
       },

@@ -214,7 +214,7 @@ const Footer = () => {
                 let link = siteData.socialLinks[key] || "#";
                 if (typeof link === "string" && link !== "#") {
                   link = link.trim();
-                  if (!link.startsWith("http")) {
+                  if (!link.startsWith("https")) {
                     link = `https://${link}`;
                   }
                 }

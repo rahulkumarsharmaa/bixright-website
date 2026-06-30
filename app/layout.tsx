@@ -20,10 +20,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${ibmPlexSans.variable} ${fedraSans.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (window.location.hostname.includes("bixright.net")) {
+                const meta = document.createElement("meta");
+                meta.httpEquiv = "Content-Security-Policy";
+                meta.content = "upgrade-insecure-requests";
+                document.getElementsByTagName("head")[0].appendChild(meta);
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="antialiased scroll-smooth custom-scrollbar font-sans bg-brand-light text-black">
         <ClientProviders>
           <LayoutWrapper>{children}</LayoutWrapper>
-
           <Toaster
             position="bottom-right"
             richColors
