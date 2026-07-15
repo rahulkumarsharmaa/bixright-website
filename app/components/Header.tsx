@@ -687,8 +687,8 @@ export default function Header() {
             >
               {/* Mobile Menu Header */}
               <div className="p-5 border-b border-brand/40 flex items-center justify-between bg-brand-light/80 flex-shrink-0">
-                <div className="font-bold text-lg text-brand flex items-center gap-2">
-                  <User size={20} />
+                <div className="font-bold text-lg text-black flex items-center gap-2">
+                  <User size={20} className="text-brand"/>
                   {token ? `Hello, ${userName || "User"}` : "Welcome Guest"}
                 </div>
                 <button onClick={closeMobileMenu} className="p-2 bg-brand/5 text-brand rounded-full"><X size={18} /></button>
@@ -706,7 +706,7 @@ export default function Header() {
 
                 {/* Categories */}
                 <div className="p-5">
-                  <h3 className="text-xs font-bold text-brand/80 uppercase tracking-wider mb-2">Shop By Category</h3>
+                  <h3 className="text-xs font-bold text-black uppercase tracking-wider mb-2">Shop By Category</h3>
                   <div className="space-y-1">
                     {mainCategories.map(cat => (
                       <div key={cat._id} className="border-b border-brand/5 last:border-0">
@@ -716,7 +716,7 @@ export default function Header() {
                               router.push(`/category/${cat._id}?categoryName=${encodeURIComponent(cat.title)}`);
                               closeMobileMenu();
                             }}
-                            className="text-[15px] font-medium text-brand flex-1 text-left"
+                            className="text-[15px] font-medium text-black flex-1 text-left"
                           >
                             {cat.title}
                           </button>
