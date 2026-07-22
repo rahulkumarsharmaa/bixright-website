@@ -51,6 +51,7 @@ const Footer = () => {
     { name: "Shipping Policy", href: "/shipping-policy" },
     { name: "Return Policy", href: "/return-policy" },
     { name: "Contact Us", href: "/contact" },
+    { name: "Blogs", href: "/blogs" },
   ];
 
   const legalLinks = [
